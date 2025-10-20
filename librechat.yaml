@@ -1,0 +1,68 @@
+version: 1.1.9
+cache: true
+endpoints:
+  # The order here determines the order in the UI
+  openAI:
+    apiKey: ${OPENAI_API_KEY}
+    models:
+      gpt-4o:
+        agents: true
+      gpt-4-turbo:
+        agents: true
+      gpt-3.5-turbo:
+        agents: true
+    fileUploader:
+      enable: true
+  anthropic:
+    apiKey: ${ANTHROPIC_API_KEY}
+    models:
+      claude-3-opus-20240229:
+        agents: true
+      claude-3-sonnet-20240229:
+        agents: true
+  google:
+    # NOTE: This will only work if you add GOOGLE_API_KEY to your Render environment
+    apiKey: ${GOOGLE_API_KEY}
+    models:
+      gemini-1.5-pro-latest:
+        agents: true
+      gemini-pro:
+        agents: true
+  cohere:
+    apiKey: ${COHERE_API_KEY}
+    models:
+      command-r-plus:
+        agents: true
+      command-r:
+        agents: true
+  openrouter:
+    apiKey: ${OPENROUTER_API_KEY}
+    # For a full list of models, see: https://openrouter.ai/docs#models
+    models:
+      google/gemini-flash-1.5:
+        agents: true
+      meta-llama/llama-3-8b-instruct:
+        agents: true
+  custom:
+    - name: "AI/ML API" # This name will show up in the UI
+      apiKey: ${AIML_API_KEY}
+      baseURL: "https://api.aimlapi.com/v1/"
+      # The example shows gpt-4o. You can add other model names here as you find them.
+      models:
+        "gpt-4o":
+          agents: true
+      titleConvo: true
+      modelDisplayLabel: "AI/ML API" # Label for the model dropdown
+# This section enables and configures the tools available to the agents
+tools:
+  calculator:
+    enable: true
+  google:
+    # This uses the Tavily API for search
+    enable: true
+    apiKey: ${TAVILY_API_KEY}
+# This section enables the assistants feature
+assistants:
+  enable: true
+  fileUploader:
+    enable: true
