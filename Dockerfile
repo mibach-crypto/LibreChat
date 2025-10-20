@@ -47,6 +47,9 @@ RUN \
 # Node API setup
 EXPOSE 3080
 ENV HOST=0.0.0.0
+# Suppress config warnings and set RAG API placeholder
+ENV CONFIG_SUPPRESS_WARNING=true
+ENV RAG_API_URL=http://rag-api:8000
 CMD ["npm", "run", "backend"]
 
 # Optional: for client with nginx routing
