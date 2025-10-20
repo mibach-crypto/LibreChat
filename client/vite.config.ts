@@ -93,7 +93,12 @@ export default defineConfig(({ command }) => ({
       threshold: 10240,
     }),
   ],
-  publicDir: command === 'serve' ? './public' : false,
+  // Always include the `public` directory so that static assets like PWA icons
+  // (e.g. `assets/maskable-icon.png`) are copied to the production build.
+  // Without this, the Workbox plugin will emit warnings and break the Docker
+  // build because the glob patterns cannot find the referenced files in the
+  // generated `/app/client/dist` directory.
+  publicDir: './public',
   build: {
     sourcemap: process.env.NODE_ENV === 'development',
     outDir: './dist',
