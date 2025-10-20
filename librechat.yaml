@@ -1,22 +1,16 @@
 version: 1.1.9
 cache: true
 endpoints:
-  # Note: The order of endpoints will be the order they appear in the UI
+  # The order here determines the order in the UI
   openAI:
-    # Recommended: Use environment variables for API keys
-    # You can also hard-code the key here, but it's less secure
     apiKey: ${OPENAI_API_KEY}
-    # These are the default models for the OpenAI endpoint
-    # You can customize this list to include the models you prefer
     models:
       gpt-4o:
-        # Let's enable this model for agents
         agents: true
       gpt-4-turbo:
         agents: true
       gpt-3.5-turbo:
         agents: true
-    # Let's enable the file Uploader for this endpoint
     fileUploader:
       enable: true
   anthropic:
@@ -27,38 +21,48 @@ endpoints:
       claude-3-sonnet-20240229:
         agents: true
   google:
-    # For Google, you can either use an API key or a credentials file
-    # We will use the API key from the environment variable
+    # NOTE: This will only work if you add GOOGLE_API_KEY to your Render environment
     apiKey: ${GOOGLE_API_KEY}
     models:
       gemini-1.5-pro-latest:
         agents: true
       gemini-pro:
         agents: true
-  # Let's also add the OpenRouter endpoint
+  cohere:
+    apiKey: ${COHERE_API_KEY}
+    models:
+      command-r-plus:
+        agents: true
+      command-r:
+        agents: true
   openrouter:
     apiKey: ${OPENROUTER_API_KEY}
-    # You can add any models from OpenRouter here
-    # For a full list, see: https://openrouter.ai/docs#models
+    # For a full list of models, see: https://openrouter.ai/docs#models
     models:
       google/gemini-flash-1.5:
         agents: true
       meta-llama/llama-3-8b-instruct:
         agents: true
+  custom:
+    - name: "AI/ML API" # This name will show up in the UI
+      apiKey: ${AIML_API_KEY}
+      baseURL: "https://api.aimlapi.com/v1/"
+      # The example shows gpt-4o. You can add other model names here as you find them.
+      models:
+        "gpt-4o":
+          agents: true
+      titleConvo: true
+      modelDisplayLabel: "AI/ML API" # Label for the model dropdown
 # This section enables and configures the tools available to the agents
 tools:
-  # Let's enable the Calculator tool
   calculator:
     enable: true
-  # And the Google Search tool
   google:
+    # This uses the Tavily API for search
     enable: true
-    # We will use the Tavily API for this
     apiKey: ${TAVILY_API_KEY}
 # This section enables the assistants feature
 assistants:
-  # Let's enable the assistants feature
   enable: true
-  # And let's enable the file uploader for assistants
   fileUploader:
     enable: true
