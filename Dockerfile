@@ -41,7 +41,7 @@ COPY --chown=node:node . .
 RUN \
     # React client build
     NODE_OPTIONS="--max-old-space-size=2048" npm run frontend; \
-    npm prune --production; \
+    npm prune --production --omit=dev; \
     npm cache clean --force
 
 # Node API setup
