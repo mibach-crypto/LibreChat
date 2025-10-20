@@ -1,67 +1,169 @@
-version: 1.1.9
+version: 1.2.1
 cache: true
+
+interface:
+  endpointsMenu: true
+  modelSelect: true
+  parameters: true
+  sidePanel: true
+  presets: true
+  prompts: true
+  bookmarks: true
+  multiConvo: true
+  agents: true
+  fileSearch: true
+  fileCitations: true
+
 endpoints:
-  # The order here determines the order in the UI
   openAI:
     apiKey: ${OPENAI_API_KEY}
     models:
-      gpt-4o:
-        agents: true
-      gpt-4-turbo:
-        agents: true
-      gpt-3.5-turbo:
-        agents: true
+      default:
+        - gpt-4o
+        - gpt-4o-mini
+        - gpt-4-turbo
+        - gpt-3.5-turbo
+      fetch: false
     fileUploader:
       enable: true
   anthropic:
     apiKey: ${ANTHROPIC_API_KEY}
     models:
-      claude-3-opus-20240229:
-        agents: true
-      claude-3-sonnet-20240229:
-        agents: true
+      default:
+        - claude-3-7-sonnet-20250219
+        - claude-3-5-sonnet-20241022
+        - claude-3-opus-20240229
+        - claude-3-sonnet-20240229
+      fetch: false
   google:
-    # NOTE: This will only work if you add GOOGLE_API_KEY to your Render environment
-    apiKey: ${GOOGLE_API_KEY}
+    apiKey: ${GOOGLE_KEY}
     models:
-      gemini-1.5-pro-latest:
-        agents: true
-      gemini-pro:
-        agents: true
-  cohere:
-    apiKey: ${COHERE_API_KEY}
-    models:
-      command-r-plus:
-        agents: true
-      command-r:
-        agents: true
-  openrouter:
-    apiKey: ${OPENROUTER_API_KEY}
-    # For a full list of models, see: https://openrouter.ai/docs#models
-    models:
-      google/gemini-flash-1.5:
-        agents: true
-      meta-llama/llama-3-8b-instruct:
-        agents: true
+      default:
+        - gemini-2.5-pro
+        - gemini-2.5-flash
+        - gemini-2.0-flash-001
+        - gemini-1.5-pro-latest
+        - gemini-1.5-flash-latest
+      fetch: false
+    titleConvo: true
+    titleModel: gemini-2.5-flash
+  agents:
+    allowedProviders:
+      - openAI
+      - anthropic
+      - google
+      - custom
+      - bedrock
+      - groq
+      - mistral
+      - openrouter
+      - cohere
+      - deepseek
+      - xai
+    capabilities:
+      - execute_code
+      - file_search
+      - web_search
+      - artifacts
+      - actions
+      - context
+      - tools
+      - chain
+      - ocr
   custom:
-    - name: "AI/ML API" # This name will show up in the UI
-      apiKey: ${AIML_API_KEY}
-      baseURL: "https://api.aimlapi.com/v1/"
-      # The example shows gpt-4o. You can add other model names here as you find them.
+    - name: "groq"
+      apiKey: ${GROQ_API_KEY}
+      baseURL: "https://api.groq.com/openai/v1"
       models:
-        "gpt-4o":
-          agents: true
+        default:
+          - llama3-70b-8192
+          - llama3-8b-8192
+          - mixtral-8x7b-32768
+          - gemma-7b-it
+        fetch: false
       titleConvo: true
-      modelDisplayLabel: "AI/ML API" # Label for the model dropdown
-# This section enables and configures the tools available to the agents
+      titleModel: mixtral-8x7b-32768
+      modelDisplayLabel: "Groq"
+    - name: "mistral"
+      apiKey: ${MISTRAL_API_KEY}
+      baseURL: "https://api.mistral.ai/v1"
+      models:
+        default:
+          - mistral-small
+          - mistral-medium
+          - mistral-large
+        fetch: true
+      dropParams:
+        - stop
+        - user
+        - frequency_penalty
+        - presence_penalty
+      titleConvo: true
+      titleModel: mistral-small
+      modelDisplayLabel: "Mistral"
+    - name: "openrouter"
+      apiKey: ${OPENROUTER_KEY}
+      baseURL: "https://openrouter.ai/api/v1"
+      dropParams:
+        - stop
+      models:
+        default:
+          - meta-llama/llama-3-8b-instruct
+          - google/gemini-flash-1.5
+        fetch: true
+      titleConvo: true
+      titleModel: meta-llama/llama-3-8b-instruct
+      modelDisplayLabel: "OpenRouter"
+    - name: "cohere"
+      apiKey: ${COHERE_API_KEY}
+      baseURL: "https://api.cohere.com/v1"
+      models:
+        default:
+          - command-r-plus
+          - command-r
+        fetch: false
+      titleConvo: true
+      titleModel: command-r-plus
+      modelDisplayLabel: "Cohere"
+    - name: "deepseek"
+      apiKey: ${DEEPSEEK_API_KEY}
+      baseURL: "https://api.deepseek.com/v1"
+      models:
+        default:
+          - deepseek-chat
+          - deepseek-coder
+        fetch: false
+      titleConvo: true
+      titleModel: deepseek-chat
+      modelDisplayLabel: "DeepSeek"
+    - name: "xai"
+      apiKey: ${XAI_API_KEY}
+      baseURL: "https://api.x.ai/v1"
+      models:
+        default:
+          - grok-beta
+        fetch: false
+      titleConvo: true
+      titleModel: grok-beta
+      modelDisplayLabel: "xAI"
+    - name: "aimlapi"
+      apiKey: ${AIML_API_KEY}
+      baseURL: "https://api.aimlapi.com/v1"
+      models:
+        default:
+          - gpt-4o
+        fetch: false
+      titleConvo: true
+      titleModel: gpt-4o
+      modelDisplayLabel: "AI/ML API"
+
 tools:
   calculator:
     enable: true
   google:
-    # This uses the Tavily API for search
     enable: true
     apiKey: ${TAVILY_API_KEY}
-# This section enables the assistants feature
+
 assistants:
   enable: true
   fileUploader:
