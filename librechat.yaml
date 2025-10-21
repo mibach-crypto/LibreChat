@@ -405,3 +405,479 @@ modelSpecs:
           - stable-diffusion
           - flux
           - tavily_search_results_json
+
+    # ========================================================================
+    # PRIMARY CODING AGENTS - Haiku 4.5, o4-mini-high, o4-mini
+    # ========================================================================
+
+    - name: 'github-coder-haiku45'
+      label: 'GitHub Coder (Haiku 4.5)'
+      description: 'Primary coding agent powered by Claude Haiku 4.5 with all tools and GitHub integration.'
+      iconURL: 'anthropic'
+      group: 'agents'
+      preset:
+        endpoint: 'agents'
+        provider: 'anthropic'
+        modelLabel: 'Claude Haiku 4.5'
+        model: 'claude-haiku-4-5-20251001'
+        greeting: 'Hi! I am your primary coding assistant powered by Claude Haiku 4.5. Ready to help with GitHub, code execution, and development tasks.'
+        promptPrefix: |-
+          You are an expert coding agent with comprehensive development tooling.
+
+          **GitHub Integration:**
+          - Direct access to GitHub REST API (api.github.com)
+          - Review PRs, analyze repos, manage issues and workflows
+          - Always reference file paths and line numbers
+
+          **Development Capabilities:**
+          - Execute code in sandboxed environments
+          - File search and vector-based analysis
+          - Comprehensive web search and research
+          - Image generation tools
+          - Real-time data access
+
+          **Approach:**
+          - Write clean, production-ready code
+          - Provide thorough explanations
+          - Test and validate solutions
+          - Follow best practices and security guidelines
+        temperature: 0.3
+        max_tokens: 32000
+        resendFiles: true
+        execute_code: true
+        file_search: true
+        web_search: true
+        tools:
+          - calculator
+          - tavily_search_results_json
+          - traversaal_search
+          - google
+          - youtube
+          - image_gen_oai
+          - dalle
+          - wolfram
+          - serpapi
+          - open_weather
+          - stable-diffusion
+          - flux
+          - azure-ai-search
+
+    - name: 'github-coder-o4mini-high'
+      label: 'GitHub Coder (o4-mini-high)'
+      description: 'Primary coding agent powered by OpenAI o4-mini-high with all tools and GitHub integration.'
+      iconURL: 'openAI'
+      group: 'agents'
+      preset:
+        endpoint: 'agents'
+        provider: 'openai'
+        modelLabel: 'o4-mini-high'
+        model: 'o4-mini-high'
+        greeting: 'Hi! I am your primary coding assistant powered by o4-mini-high. Ready to help with GitHub, code execution, and development tasks.'
+        promptPrefix: |-
+          You are an expert coding agent with comprehensive development tooling.
+
+          **GitHub Integration:**
+          - Direct access to GitHub REST API (api.github.com)
+          - Review PRs, analyze repos, manage issues and workflows
+          - Always reference file paths and line numbers
+
+          **Development Capabilities:**
+          - Execute code in sandboxed environments
+          - File search and vector-based analysis
+          - Comprehensive web search and research
+          - Image generation tools
+          - Real-time data access
+
+          **Approach:**
+          - Write clean, production-ready code
+          - Provide thorough explanations
+          - Test and validate solutions
+          - Follow best practices and security guidelines
+        temperature: 0.3
+        max_tokens: 100000
+        resendFiles: true
+        execute_code: true
+        file_search: true
+        web_search: true
+        tools:
+          - calculator
+          - tavily_search_results_json
+          - traversaal_search
+          - google
+          - youtube
+          - image_gen_oai
+          - dalle
+          - wolfram
+          - serpapi
+          - open_weather
+          - stable-diffusion
+          - flux
+          - azure-ai-search
+
+    - name: 'github-coder-o4mini'
+      label: 'GitHub Coder (o4-mini)'
+      description: 'Primary coding agent powered by OpenAI o4-mini with all tools and GitHub integration.'
+      iconURL: 'openAI'
+      group: 'agents'
+      preset:
+        endpoint: 'agents'
+        provider: 'openai'
+        modelLabel: 'o4-mini'
+        model: 'o4-mini'
+        greeting: 'Hi! I am your primary coding assistant powered by o4-mini. Ready to help with GitHub, code execution, and development tasks.'
+        promptPrefix: |-
+          You are an expert coding agent with comprehensive development tooling.
+
+          **GitHub Integration:**
+          - Direct access to GitHub REST API (api.github.com)
+          - Review PRs, analyze repos, manage issues and workflows
+          - Always reference file paths and line numbers
+
+          **Development Capabilities:**
+          - Execute code in sandboxed environments
+          - File search and vector-based analysis
+          - Comprehensive web search and research
+          - Image generation tools
+          - Real-time data access
+
+          **Approach:**
+          - Write clean, production-ready code
+          - Provide thorough explanations
+          - Test and validate solutions
+          - Follow best practices and security guidelines
+        temperature: 0.3
+        max_tokens: 100000
+        resendFiles: true
+        execute_code: true
+        file_search: true
+        web_search: true
+        tools:
+          - calculator
+          - tavily_search_results_json
+          - traversaal_search
+          - google
+          - youtube
+          - image_gen_oai
+          - dalle
+          - wolfram
+          - serpapi
+          - open_weather
+          - stable-diffusion
+          - flux
+          - azure-ai-search
+
+    # ========================================================================
+    # REASONING AGENTS - Opus 4.1, o3-pro, o3 (excellent for all uses including coding)
+    # ========================================================================
+
+    - name: 'github-reasoning-opus41'
+      label: 'GitHub Reasoning (Opus 4.1)'
+      description: 'Advanced reasoning agent powered by Claude Opus 4.1, excellent for all uses including coding, with GitHub integration.'
+      iconURL: 'anthropic'
+      group: 'agents'
+      preset:
+        endpoint: 'agents'
+        provider: 'anthropic'
+        modelLabel: 'Claude Opus 4.1'
+        model: 'claude-opus-4.1-20250514'
+        greeting: 'Hello! I am a reasoning-focused agent powered by Claude Opus 4.1. I excel at complex problem-solving, deep analysis, and coding.'
+        promptPrefix: |-
+          You are an advanced reasoning agent with deep analytical capabilities and coding expertise.
+
+          **Reasoning Approach:**
+          - Break down complex problems systematically
+          - Analyze multiple solutions and trade-offs
+          - Provide thorough, well-reasoned explanations
+          - Excel at both coding and abstract problem-solving
+
+          **GitHub Integration:**
+          - Deep repository analysis and architecture review
+          - Comprehensive PR reviews with security analysis
+          - Issue triage and prioritization
+          - Strategic planning and technical decision-making
+
+          **Technical Capabilities:**
+          - Advanced code analysis and optimization
+          - Execute and validate solutions
+          - Research and synthesis of technical information
+          - All development and creative tools available
+        temperature: 0.3
+        max_tokens: 32000
+        resendFiles: true
+        execute_code: true
+        file_search: true
+        web_search: true
+        tools:
+          - calculator
+          - tavily_search_results_json
+          - traversaal_search
+          - google
+          - youtube
+          - image_gen_oai
+          - dalle
+          - wolfram
+          - serpapi
+          - open_weather
+          - stable-diffusion
+          - flux
+          - azure-ai-search
+
+    - name: 'github-reasoning-o3pro'
+      label: 'GitHub Reasoning (o3-pro)'
+      description: 'Advanced reasoning agent powered by OpenAI o3-pro, excellent for all uses including coding, with GitHub integration.'
+      iconURL: 'openAI'
+      group: 'agents'
+      preset:
+        endpoint: 'agents'
+        provider: 'openai'
+        modelLabel: 'o3-pro'
+        model: 'o3-pro'
+        greeting: 'Hello! I am a reasoning-focused agent powered by o3-pro. I excel at complex problem-solving, deep analysis, and coding.'
+        promptPrefix: |-
+          You are an advanced reasoning agent with deep analytical capabilities and coding expertise.
+
+          **Reasoning Approach:**
+          - Break down complex problems systematically
+          - Analyze multiple solutions and trade-offs
+          - Provide thorough, well-reasoned explanations
+          - Excel at both coding and abstract problem-solving
+
+          **GitHub Integration:**
+          - Deep repository analysis and architecture review
+          - Comprehensive PR reviews with security analysis
+          - Issue triage and prioritization
+          - Strategic planning and technical decision-making
+
+          **Technical Capabilities:**
+          - Advanced code analysis and optimization
+          - Execute and validate solutions
+          - Research and synthesis of technical information
+          - All development and creative tools available
+        temperature: 0.3
+        max_tokens: 100000
+        resendFiles: true
+        execute_code: true
+        file_search: true
+        web_search: true
+        tools:
+          - calculator
+          - tavily_search_results_json
+          - traversaal_search
+          - google
+          - youtube
+          - image_gen_oai
+          - dalle
+          - wolfram
+          - serpapi
+          - open_weather
+          - stable-diffusion
+          - flux
+          - azure-ai-search
+
+    - name: 'github-reasoning-o3'
+      label: 'GitHub Reasoning (o3)'
+      description: 'Advanced reasoning agent powered by OpenAI o3, excellent for all uses including coding, with GitHub integration.'
+      iconURL: 'openAI'
+      group: 'agents'
+      preset:
+        endpoint: 'agents'
+        provider: 'openai'
+        modelLabel: 'o3'
+        model: 'o3'
+        greeting: 'Hello! I am a reasoning-focused agent powered by o3. I excel at complex problem-solving, deep analysis, and coding.'
+        promptPrefix: |-
+          You are an advanced reasoning agent with deep analytical capabilities and coding expertise.
+
+          **Reasoning Approach:**
+          - Break down complex problems systematically
+          - Analyze multiple solutions and trade-offs
+          - Provide thorough, well-reasoned explanations
+          - Excel at both coding and abstract problem-solving
+
+          **GitHub Integration:**
+          - Deep repository analysis and architecture review
+          - Comprehensive PR reviews with security analysis
+          - Issue triage and prioritization
+          - Strategic planning and technical decision-making
+
+          **Technical Capabilities:**
+          - Advanced code analysis and optimization
+          - Execute and validate solutions
+          - Research and synthesis of technical information
+          - All development and creative tools available
+        temperature: 0.3
+        max_tokens: 100000
+        resendFiles: true
+        execute_code: true
+        file_search: true
+        web_search: true
+        tools:
+          - calculator
+          - tavily_search_results_json
+          - traversaal_search
+          - google
+          - youtube
+          - image_gen_oai
+          - dalle
+          - wolfram
+          - serpapi
+          - open_weather
+          - stable-diffusion
+          - flux
+          - azure-ai-search
+
+    # ========================================================================
+    # GENERAL PURPOSE AGENTS - Sonnet 4 (1M context), Gemini 2.5 Pro
+    # ========================================================================
+
+    - name: 'github-general-sonnet4'
+      label: 'GitHub General (Sonnet 4 - 1M)'
+      description: 'General purpose agent with 1 million token context powered by Claude Sonnet 4, with all tools and GitHub integration.'
+      iconURL: 'anthropic'
+      group: 'agents'
+      preset:
+        endpoint: 'agents'
+        provider: 'anthropic'
+        modelLabel: 'Claude Sonnet 4 (1M)'
+        model: 'claude-sonnet-4-5-20250929'
+        greeting: 'Hello! I am a general purpose agent with massive context (1M tokens). I can handle complex multi-file projects and extensive codebases.'
+        promptPrefix: |-
+          You are a versatile general-purpose agent with extended context capabilities.
+
+          **Context Strength:**
+          - 1 million token context window
+          - Handle entire codebases and large projects
+          - Maintain coherence across extensive conversations
+          - Process multiple files and dependencies simultaneously
+
+          **GitHub Integration:**
+          - Comprehensive repository analysis
+          - Multi-file PR reviews
+          - Cross-repository research
+          - Long-term project planning
+
+          **Full Capabilities:**
+          - Code execution and testing
+          - Web search and research
+          - Image generation
+          - File search and analysis
+          - All development tools
+        temperature: 0.3
+        max_tokens: 32000
+        resendFiles: true
+        execute_code: true
+        file_search: true
+        web_search: true
+        tools:
+          - calculator
+          - tavily_search_results_json
+          - traversaal_search
+          - google
+          - youtube
+          - image_gen_oai
+          - dalle
+          - wolfram
+          - serpapi
+          - open_weather
+          - stable-diffusion
+          - flux
+          - azure-ai-search
+
+    - name: 'github-general-gemini25pro'
+      label: 'GitHub General (Gemini 2.5 Pro)'
+      description: 'General purpose multimodal agent powered by Gemini 2.5 Pro with all tools and GitHub integration.'
+      iconURL: 'google'
+      group: 'agents'
+      preset:
+        endpoint: 'agents'
+        provider: 'google'
+        modelLabel: 'Gemini 2.5 Pro'
+        model: 'gemini-2.5-pro'
+        greeting: 'Hi! I am a multimodal general purpose agent powered by Gemini 2.5 Pro. I excel at processing images, code, and text together.'
+        promptPrefix: |-
+          You are a multimodal general-purpose agent with advanced vision and reasoning capabilities.
+
+          **Multimodal Strengths:**
+          - Process images, diagrams, screenshots, and code simultaneously
+          - Understand visual context in technical documentation
+          - Generate and analyze visual content
+          - Cross-reference visual and textual information
+
+          **GitHub Integration:**
+          - Repository analysis with diagram comprehension
+          - UI/UX review and feedback
+          - Documentation with visual elements
+          - Architecture visualization and analysis
+
+          **Full Toolkit:**
+          - Code execution environment
+          - Multi-source web search
+          - Image generation (DALL-E, Stable Diffusion, Flux)
+          - Data services and calculations
+          - File search and analysis
+        temperature: 0.3
+        maxOutputTokens: 32000
+        resendFiles: true
+        execute_code: true
+        file_search: true
+        web_search: true
+        tools:
+          - calculator
+          - tavily_search_results_json
+          - traversaal_search
+          - google
+          - youtube
+          - wolfram
+          - serpapi
+          - open_weather
+          - stable-diffusion
+          - flux
+          - azure-ai-search
+
+    # ========================================================================
+    # SPECIALIZED AGENTS
+    # ========================================================================
+
+    - name: 'github-devops-haiku45'
+      label: 'GitHub DevOps (Haiku 4.5)'
+      description: 'DevOps specialist for CI/CD, GitHub Actions, and infrastructure automation.'
+      iconURL: 'anthropic'
+      group: 'agents'
+      preset:
+        endpoint: 'agents'
+        provider: 'anthropic'
+        modelLabel: 'Claude Haiku 4.5'
+        model: 'claude-haiku-4-5-20251001'
+        greeting: 'DevOps agent ready! Specialized in GitHub Actions, CI/CD pipelines, and infrastructure automation.'
+        promptPrefix: |-
+          You are a DevOps specialist focused on automation and infrastructure.
+
+          **GitHub Actions Expertise:**
+          - Design and optimize workflows
+          - Debug pipeline failures
+          - Security best practices
+          - Deployment automation
+
+          **Infrastructure:**
+          - Docker and containerization
+          - Cloud platforms (AWS, Azure, GCP)
+          - Infrastructure as Code
+          - Monitoring and observability
+
+          **Automation:**
+          - Script generation and execution
+          - Log analysis
+          - Performance optimization
+          - Security scanning
+        temperature: 0.3
+        max_tokens: 32000
+        resendFiles: true
+        execute_code: true
+        file_search: true
+        web_search: true
+        tools:
+          - calculator
+          - tavily_search_results_json
+          - google
+          - serpapi
+          - wolfram
