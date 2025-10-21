@@ -42,57 +42,47 @@ actions:
     - 'uploads.github.com'
     - 'media.githubusercontent.com'
 
+# Only tools that work with your available API keys
 includedTools:
   - calculator
   - tavily_search_results_json
   - traversaal_search
-  - google
-  - youtube
   - image_gen_oai
   - dalle
-  - wolfram
-  - serpapi
-  - open_weather
-  - stable-diffusion
-  - azure-ai-search
-  - flux
 
 endpoints:
+  # OpenAI - You have this API key
   openAI:
     apiKey: ${OPENAI_API_KEY}
     models:
       default:
+        - o3-pro
+        - o3
+        - o4-mini-high
+        - o4-mini
         - gpt-4o
         - gpt-4o-mini
-        - gpt-4-turbo
-        - gpt-3.5-turbo
       fetch: false
     titleConvo: true
     titleModel: gpt-4o-mini
     fileUploader:
       enable: true
+
+  # Anthropic - You have this API key
   anthropic:
     apiKey: ${ANTHROPIC_API_KEY}
     models:
       default:
+        - claude-opus-4.1-20250514
+        - claude-sonnet-4-5-20250929
+        - claude-haiku-4-5-20251001
         - claude-3-5-sonnet-20241022
         - claude-3-5-haiku-20241022
-        - claude-3-haiku-20240307
-        - claude-3-opus-20240229
       fetch: false
     titleConvo: true
     titleModel: claude-3-5-haiku-20241022
-  google:
-    apiKey: ${GOOGLE_KEY}
-    models:
-      default:
-        - gemini-2.0-flash-001
-        - gemini-1.5-pro-latest
-        - gemini-1.5-flash-latest
-        - gemini-1.0-pro
-      fetch: false
-    titleConvo: true
-    titleModel: gemini-2.0-flash-001
+
+  # Assistants API
   assistants:
     disableBuilder: false
     pollIntervalMs: 1000
@@ -105,6 +95,8 @@ endpoints:
       - actions
       - tools
       - image_vision
+
+  # Agents configuration
   agents:
     recursionLimit: 32
     maxRecursionLimit: 64
@@ -117,46 +109,12 @@ endpoints:
     allowedProviders:
       - openAI
       - anthropic
-      - google
-      - custom
-      - bedrock
-      - groq
-      - mistral
       - openrouter
       - cohere
-      - deepseek
-      - xai
+
+  # Custom endpoints
   custom:
-    - name: 'groq'
-      apiKey: ${GROQ_API_KEY}
-      baseURL: 'https://api.groq.com/openai/v1'
-      models:
-        default:
-          - llama3-70b-8192
-          - llama3-8b-8192
-          - mixtral-8x7b-32768
-          - gemma-7b-it
-        fetch: false
-      titleConvo: true
-      titleModel: mixtral-8x7b-32768
-      modelDisplayLabel: 'Groq'
-    - name: 'mistral'
-      apiKey: ${MISTRAL_API_KEY}
-      baseURL: 'https://api.mistral.ai/v1'
-      models:
-        default:
-          - mistral-tiny
-          - mistral-small
-          - mistral-medium
-        fetch: true
-      dropParams:
-        - stop
-        - user
-        - frequency_penalty
-        - presence_penalty
-      titleConvo: true
-      titleModel: mistral-small
-      modelDisplayLabel: 'Mistral'
+    # OpenRouter - You have this API key
     - name: 'openrouter'
       apiKey: ${OPENROUTER_KEY}
       baseURL: 'https://openrouter.ai/api/v1'
@@ -173,6 +131,8 @@ endpoints:
       titleConvo: true
       titleModel: meta-llama/llama-3-70b-instruct
       modelDisplayLabel: 'OpenRouter'
+
+    # Cohere - You have this API key
     - name: 'cohere'
       apiKey: ${COHERE_API_KEY}
       baseURL: 'https://api.cohere.com/v1'
@@ -184,27 +144,6 @@ endpoints:
       titleConvo: true
       titleModel: command-r-plus
       modelDisplayLabel: 'Cohere'
-    - name: 'deepseek'
-      apiKey: ${DEEPSEEK_API_KEY}
-      baseURL: 'https://api.deepseek.com/v1'
-      models:
-        default:
-          - deepseek-chat
-          - deepseek-coder
-        fetch: false
-      titleConvo: true
-      titleModel: deepseek-chat
-      modelDisplayLabel: 'DeepSeek'
-    - name: 'xai'
-      apiKey: ${XAI_API_KEY}
-      baseURL: 'https://api.x.ai/v1'
-      models:
-        default:
-          - grok-beta
-        fetch: false
-      titleConvo: true
-      titleModel: grok-beta
-      modelDisplayLabel: 'xAI'
 
 fileConfig:
   endpoints:
@@ -222,12 +161,7 @@ fileConfig:
   avatarSizeLimit: 2
 
 webSearch:
-  serperApiKey: ${SERPER_API_KEY}
-  firecrawlApiKey: ${FIRECRAWL_API_KEY}
-  firecrawlApiUrl: ${FIRECRAWL_API_URL}
-  jinaApiKey: ${JINA_API_KEY}
-  jinaApiUrl: ${JINA_API_URL}
-  cohereApiKey: ${COHERE_API_KEY}
+  tavilyApiKey: ${TAVILY_API_KEY}
 
 modelSpecs:
   enforce: false
@@ -235,649 +169,147 @@ modelSpecs:
   addedEndpoints:
     - openAI
     - anthropic
-    - google
-    - groq
     - openrouter
     - assistants
     - agents
   list:
-    - name: 'default-gpt4o'
-      label: 'GPT-4o Balanced'
-      default: true
-      description: 'General-purpose assistant tuned for balanced creativity and accuracy.'
-      iconURL: 'openAI'
-      group: 'openAI'
-      preset:
-        endpoint: 'openAI'
-        modelLabel: 'GPT-4o'
-        model: 'gpt-4o'
-        greeting: 'Hi there! Paste your question or drop files to get started.'
-        temperature: 0.6
-        max_tokens: 2048
-        resendFiles: true
-        web_search: true
-        tools:
-          - calculator
-          - tavily_search_results_json
-          - google
-    - name: 'github-project-engineer'
-      label: 'GitHub Project Engineer'
-      description: 'Triage issues, review PRs, and plan delivery directly against your GitHub repos.'
-      iconURL: 'openAI'
-      group: 'openAI'
-      preset:
-        endpoint: 'openAI'
-        modelLabel: 'GPT-4o'
-        model: 'gpt-4o'
-        greeting: 'Share a repository link, pull request, or issue summary to get started.'
-        promptPrefix: |-
-          You are an expert software engineer and release manager embedded with the team.
-          - Prioritize security, maintainability, and developer experience.
-          - When given repository links, pull requests, or issues, retrieve additional context using the GitHub REST API (https://api.github.com) before proposing actions.
-          - Summaries must include affected modules, risk level, test/gate status, and next steps.
-          - Offer concise checklists for follow-up work and reference the relevant file paths or URLs.
-          - Favour incremental, reviewable pull requests and note any required secrets or environment variables.
-        temperature: 0.45
-        max_tokens: 2048
-        resendFiles: true
-        web_search: true
-        tools:
-          - tavily_search_results_json
-          - google
-          - serpapi
-          - traversaal_search
-          - calculator
-    - name: 'analysis-claude'
-      label: 'Claude Sonnet Deep Analysis'
-      description: 'Anthropic Claude Sonnet configured for thoughtful, low-temperature reasoning.'
+    # ========================================================================
+    # PRIMARY CODING PRESETS
+    # ========================================================================
+    - name: 'coder-haiku45'
+      label: 'Coder (Haiku 4.5)'
+      description: 'Primary coding preset powered by Claude Haiku 4.5 - fast and efficient.'
       iconURL: 'anthropic'
       group: 'anthropic'
       preset:
         endpoint: 'anthropic'
-        modelLabel: 'Claude 3.5 Sonnet'
-        model: 'claude-3-5-sonnet-20241022'
-        promptPrefix: |
-          You are an analytical assistant. Provide structured answers with call-outs for assumptions, risks, and next steps.
-        temperature: 0.3
-        max_tokens: 2048
-        resendFiles: true
-        web_search: true
-        tools:
-          - tavily_search_results_json
-          - google
-          - wolfram
-          - open_weather
-    - name: 'release-notes-strategist'
-      label: 'Release Notes Strategist'
-      description: 'Compile changelog-ready release notes from merged pull requests and issues.'
-      iconURL: 'openAI'
-      group: 'openAI'
-      preset:
-        endpoint: 'openAI'
-        modelLabel: 'GPT-4o'
-        model: 'gpt-4o'
-        promptPrefix: |-
-          You are responsible for writing concise, audience-friendly release notes.
-          - Group changes into themes (features, fixes, performance, security, migrations).
-          - Highlight breaking changes with clear upgrade guidance.
-          - Cross-link referenced issues or pull requests using Markdown links when URLs are provided.
-          - Call out testing or verification steps that should be completed before release.
-        temperature: 0.5
-        max_tokens: 1536
-        resendFiles: true
-        web_search: true
-        tools:
-          - tavily_search_results_json
-          - google
-          - calculator
-    - name: 'speed-gemini'
-      label: 'Gemini Flash Rapid'
-      description: 'Fast Gemini Flash preset optimized for brainstorming and summarisation.'
-      iconURL: 'google'
-      group: 'google'
-      preset:
-        endpoint: 'google'
-        modelLabel: 'Gemini 2.0 Flash'
-        model: 'gemini-2.0-flash-001'
-        temperature: 0.8
-        maxOutputTokens: 1024
-        resendFiles: false
-        imageDetail: 'auto'
-        web_search: true
-        tools:
-          - tavily_search_results_json
-          - google
-          - youtube
-    - name: 'code-groq-llama3'
-      label: 'Groq Llama 3 Coding'
-      description: 'Latency-optimized coding helper running on Groq Llama 3 70B.'
-      group: 'groq'
-      preset:
-        endpoint: 'groq'
-        modelLabel: 'Llama3 70B (Groq)'
-        model: 'llama3-70b-8192'
-        temperature: 0.2
-        max_tokens: 2048
-        promptPrefix: |
-          You are a senior software engineer. Focus on correct, production-ready code with detailed explanations when helpful.
-        resendFiles: true
-        tools:
-          - calculator
-          - tavily_search_results_json
-    - name: 'test-writer-gpt4omini'
-      label: 'Unit Test Generator'
-      description: 'Generate targeted unit and integration tests with coverage guidance.'
-      iconURL: 'openAI'
-      group: 'openAI'
-      preset:
-        endpoint: 'openAI'
-        modelLabel: 'GPT-4o Mini'
-        model: 'gpt-4o-mini'
-        promptPrefix: |-
-          You write thorough automated tests that prove correctness and guard against regressions.
-          - Produce focused test cases with clear naming and AAA (arrange/act/assert) structure.
-          - Cover edge cases, unhappy paths, and expected failure modes.
-          - Suggest mocking or fixture strategies when external services are involved.
-          - When files are supplied, include the target file path in your response.
-        temperature: 0.35
-        max_tokens: 1400
-        resendFiles: true
-        tools:
-          - calculator
-          - tavily_search_results_json
-    - name: 'creative-openrouter'
-      label: 'OpenRouter Creative Mixtral'
-      description: 'Creative writing assistant leveraging Mixtral via OpenRouter.'
-      iconURL: 'https://openrouter.ai/favicon.ico'
-      group: 'openrouter'
-      preset:
-        endpoint: 'openrouter'
-        modelLabel: 'Mixtral via OpenRouter'
-        model: 'mistralai/mixtral-8x7b-instruct'
-        temperature: 0.9
-        max_tokens: 1536
-        promptPrefix: |
-          You are a creative writing partner. Offer vivid language, varied pacing, and bold ideas.
-        resendFiles: false
-        web_search: true
-        tools:
-          - image_gen_oai
-          - stable-diffusion
-          - flux
-          - tavily_search_results_json
-
-    # ========================================================================
-    # PRIMARY CODING AGENTS - Haiku 4.5, o4-mini-high, o4-mini
-    # ========================================================================
-
-    - name: 'github-coder-haiku45'
-      label: 'GitHub Coder (Haiku 4.5)'
-      description: 'Primary coding agent powered by Claude Haiku 4.5 with all tools and GitHub integration.'
-      iconURL: 'anthropic'
-      group: 'agents'
-      preset:
-        endpoint: 'agents'
-        provider: 'anthropic'
         modelLabel: 'Claude Haiku 4.5'
         model: 'claude-haiku-4-5-20251001'
-        greeting: 'Hi! I am your primary coding assistant powered by Claude Haiku 4.5. Ready to help with GitHub, code execution, and development tasks.'
-        promptPrefix: |-
-          You are an expert coding agent with comprehensive development tooling.
-
-          **GitHub Integration:**
-          - Direct access to GitHub REST API (api.github.com)
-          - Review PRs, analyze repos, manage issues and workflows
-          - Always reference file paths and line numbers
-
-          **Development Capabilities:**
-          - Execute code in sandboxed environments
-          - File search and vector-based analysis
-          - Comprehensive web search and research
-          - Image generation tools
-          - Real-time data access
-
-          **Approach:**
-          - Write clean, production-ready code
-          - Provide thorough explanations
-          - Test and validate solutions
-          - Follow best practices and security guidelines
         temperature: 0.3
         max_tokens: 32000
         resendFiles: true
-        execute_code: true
-        file_search: true
-        web_search: true
+        promptPrefix: |
+          You are an expert coding assistant. Write clean, production-ready code with thorough explanations.
         tools:
           - calculator
           - tavily_search_results_json
-          - traversaal_search
-          - google
-          - youtube
-          - image_gen_oai
-          - dalle
-          - wolfram
-          - serpapi
-          - open_weather
-          - stable-diffusion
-          - flux
-          - azure-ai-search
 
-    - name: 'github-coder-o4mini-high'
-      label: 'GitHub Coder (o4-mini-high)'
-      description: 'Primary coding agent powered by OpenAI o4-mini-high with all tools and GitHub integration.'
+    - name: 'coder-o4mini-high'
+      label: 'Coder (o4-mini-high)'
+      description: 'Primary coding preset powered by OpenAI o4-mini-high with extended output.'
       iconURL: 'openAI'
-      group: 'agents'
+      group: 'openAI'
       preset:
-        endpoint: 'agents'
-        provider: 'openai'
+        endpoint: 'openAI'
         modelLabel: 'o4-mini-high'
         model: 'o4-mini-high'
-        greeting: 'Hi! I am your primary coding assistant powered by o4-mini-high. Ready to help with GitHub, code execution, and development tasks.'
-        promptPrefix: |-
-          You are an expert coding agent with comprehensive development tooling.
-
-          **GitHub Integration:**
-          - Direct access to GitHub REST API (api.github.com)
-          - Review PRs, analyze repos, manage issues and workflows
-          - Always reference file paths and line numbers
-
-          **Development Capabilities:**
-          - Execute code in sandboxed environments
-          - File search and vector-based analysis
-          - Comprehensive web search and research
-          - Image generation tools
-          - Real-time data access
-
-          **Approach:**
-          - Write clean, production-ready code
-          - Provide thorough explanations
-          - Test and validate solutions
-          - Follow best practices and security guidelines
         temperature: 0.3
         max_tokens: 100000
         resendFiles: true
-        execute_code: true
-        file_search: true
-        web_search: true
+        promptPrefix: |
+          You are an expert coding assistant. Write clean, production-ready code with thorough explanations.
         tools:
           - calculator
           - tavily_search_results_json
-          - traversaal_search
-          - google
-          - youtube
           - image_gen_oai
-          - dalle
-          - wolfram
-          - serpapi
-          - open_weather
-          - stable-diffusion
-          - flux
-          - azure-ai-search
 
-    - name: 'github-coder-o4mini'
-      label: 'GitHub Coder (o4-mini)'
-      description: 'Primary coding agent powered by OpenAI o4-mini with all tools and GitHub integration.'
+    - name: 'coder-o4mini'
+      label: 'Coder (o4-mini)'
+      description: 'Primary coding preset powered by OpenAI o4-mini with extended output.'
       iconURL: 'openAI'
-      group: 'agents'
+      group: 'openAI'
       preset:
-        endpoint: 'agents'
-        provider: 'openai'
+        endpoint: 'openAI'
         modelLabel: 'o4-mini'
         model: 'o4-mini'
-        greeting: 'Hi! I am your primary coding assistant powered by o4-mini. Ready to help with GitHub, code execution, and development tasks.'
-        promptPrefix: |-
-          You are an expert coding agent with comprehensive development tooling.
-
-          **GitHub Integration:**
-          - Direct access to GitHub REST API (api.github.com)
-          - Review PRs, analyze repos, manage issues and workflows
-          - Always reference file paths and line numbers
-
-          **Development Capabilities:**
-          - Execute code in sandboxed environments
-          - File search and vector-based analysis
-          - Comprehensive web search and research
-          - Image generation tools
-          - Real-time data access
-
-          **Approach:**
-          - Write clean, production-ready code
-          - Provide thorough explanations
-          - Test and validate solutions
-          - Follow best practices and security guidelines
         temperature: 0.3
         max_tokens: 100000
         resendFiles: true
-        execute_code: true
-        file_search: true
-        web_search: true
+        promptPrefix: |
+          You are an expert coding assistant. Write clean, production-ready code with thorough explanations.
         tools:
           - calculator
           - tavily_search_results_json
-          - traversaal_search
-          - google
-          - youtube
           - image_gen_oai
-          - dalle
-          - wolfram
-          - serpapi
-          - open_weather
-          - stable-diffusion
-          - flux
-          - azure-ai-search
 
     # ========================================================================
-    # REASONING AGENTS - Opus 4.1, o3-pro, o3 (excellent for all uses including coding)
+    # REASONING PRESETS
     # ========================================================================
-
-    - name: 'github-reasoning-opus41'
-      label: 'GitHub Reasoning (Opus 4.1)'
-      description: 'Advanced reasoning agent powered by Claude Opus 4.1, excellent for all uses including coding, with GitHub integration.'
+    - name: 'reasoning-opus41'
+      label: 'Reasoning (Opus 4.1)'
+      description: 'Advanced reasoning preset - excellent for complex problem-solving and coding.'
       iconURL: 'anthropic'
-      group: 'agents'
+      group: 'anthropic'
       preset:
-        endpoint: 'agents'
-        provider: 'anthropic'
+        endpoint: 'anthropic'
         modelLabel: 'Claude Opus 4.1'
         model: 'claude-opus-4.1-20250514'
-        greeting: 'Hello! I am a reasoning-focused agent powered by Claude Opus 4.1. I excel at complex problem-solving, deep analysis, and coding.'
-        promptPrefix: |-
-          You are an advanced reasoning agent with deep analytical capabilities and coding expertise.
-
-          **Reasoning Approach:**
-          - Break down complex problems systematically
-          - Analyze multiple solutions and trade-offs
-          - Provide thorough, well-reasoned explanations
-          - Excel at both coding and abstract problem-solving
-
-          **GitHub Integration:**
-          - Deep repository analysis and architecture review
-          - Comprehensive PR reviews with security analysis
-          - Issue triage and prioritization
-          - Strategic planning and technical decision-making
-
-          **Technical Capabilities:**
-          - Advanced code analysis and optimization
-          - Execute and validate solutions
-          - Research and synthesis of technical information
-          - All development and creative tools available
         temperature: 0.3
         max_tokens: 32000
         resendFiles: true
-        execute_code: true
-        file_search: true
-        web_search: true
+        promptPrefix: |
+          You are an advanced reasoning assistant. Break down complex problems systematically and provide thorough, well-reasoned explanations.
         tools:
           - calculator
           - tavily_search_results_json
-          - traversaal_search
-          - google
-          - youtube
-          - image_gen_oai
-          - dalle
-          - wolfram
-          - serpapi
-          - open_weather
-          - stable-diffusion
-          - flux
-          - azure-ai-search
 
-    - name: 'github-reasoning-o3pro'
-      label: 'GitHub Reasoning (o3-pro)'
-      description: 'Advanced reasoning agent powered by OpenAI o3-pro, excellent for all uses including coding, with GitHub integration.'
+    - name: 'reasoning-o3pro'
+      label: 'Reasoning (o3-pro)'
+      description: 'Advanced reasoning preset powered by OpenAI o3-pro - excellent for all uses.'
       iconURL: 'openAI'
-      group: 'agents'
+      group: 'openAI'
       preset:
-        endpoint: 'agents'
-        provider: 'openai'
+        endpoint: 'openAI'
         modelLabel: 'o3-pro'
         model: 'o3-pro'
-        greeting: 'Hello! I am a reasoning-focused agent powered by o3-pro. I excel at complex problem-solving, deep analysis, and coding.'
-        promptPrefix: |-
-          You are an advanced reasoning agent with deep analytical capabilities and coding expertise.
-
-          **Reasoning Approach:**
-          - Break down complex problems systematically
-          - Analyze multiple solutions and trade-offs
-          - Provide thorough, well-reasoned explanations
-          - Excel at both coding and abstract problem-solving
-
-          **GitHub Integration:**
-          - Deep repository analysis and architecture review
-          - Comprehensive PR reviews with security analysis
-          - Issue triage and prioritization
-          - Strategic planning and technical decision-making
-
-          **Technical Capabilities:**
-          - Advanced code analysis and optimization
-          - Execute and validate solutions
-          - Research and synthesis of technical information
-          - All development and creative tools available
         temperature: 0.3
         max_tokens: 100000
         resendFiles: true
-        execute_code: true
-        file_search: true
-        web_search: true
+        promptPrefix: |
+          You are an advanced reasoning assistant. Break down complex problems systematically and provide thorough, well-reasoned explanations.
         tools:
           - calculator
           - tavily_search_results_json
-          - traversaal_search
-          - google
-          - youtube
           - image_gen_oai
-          - dalle
-          - wolfram
-          - serpapi
-          - open_weather
-          - stable-diffusion
-          - flux
-          - azure-ai-search
 
-    - name: 'github-reasoning-o3'
-      label: 'GitHub Reasoning (o3)'
-      description: 'Advanced reasoning agent powered by OpenAI o3, excellent for all uses including coding, with GitHub integration.'
+    - name: 'reasoning-o3'
+      label: 'Reasoning (o3)'
+      description: 'Advanced reasoning preset powered by OpenAI o3 - excellent for all uses including coding.'
       iconURL: 'openAI'
-      group: 'agents'
+      group: 'openAI'
       preset:
-        endpoint: 'agents'
-        provider: 'openai'
+        endpoint: 'openAI'
         modelLabel: 'o3'
         model: 'o3'
-        greeting: 'Hello! I am a reasoning-focused agent powered by o3. I excel at complex problem-solving, deep analysis, and coding.'
-        promptPrefix: |-
-          You are an advanced reasoning agent with deep analytical capabilities and coding expertise.
-
-          **Reasoning Approach:**
-          - Break down complex problems systematically
-          - Analyze multiple solutions and trade-offs
-          - Provide thorough, well-reasoned explanations
-          - Excel at both coding and abstract problem-solving
-
-          **GitHub Integration:**
-          - Deep repository analysis and architecture review
-          - Comprehensive PR reviews with security analysis
-          - Issue triage and prioritization
-          - Strategic planning and technical decision-making
-
-          **Technical Capabilities:**
-          - Advanced code analysis and optimization
-          - Execute and validate solutions
-          - Research and synthesis of technical information
-          - All development and creative tools available
         temperature: 0.3
         max_tokens: 100000
         resendFiles: true
-        execute_code: true
-        file_search: true
-        web_search: true
+        promptPrefix: |
+          You are an advanced reasoning assistant. Break down complex problems systematically and provide thorough, well-reasoned explanations.
         tools:
           - calculator
           - tavily_search_results_json
-          - traversaal_search
-          - google
-          - youtube
           - image_gen_oai
-          - dalle
-          - wolfram
-          - serpapi
-          - open_weather
-          - stable-diffusion
-          - flux
-          - azure-ai-search
 
     # ========================================================================
-    # GENERAL PURPOSE AGENTS - Sonnet 4 (1M context), Gemini 2.5 Pro
+    # GENERAL PURPOSE PRESETS
     # ========================================================================
-
-    - name: 'github-general-sonnet4'
-      label: 'GitHub General (Sonnet 4 - 1M)'
-      description: 'General purpose agent with 1 million token context powered by Claude Sonnet 4, with all tools and GitHub integration.'
+    - name: 'general-sonnet4'
+      label: 'General (Sonnet 4 - 1M)'
+      description: 'General purpose preset with 1 million token context window.'
       iconURL: 'anthropic'
-      group: 'agents'
+      group: 'anthropic'
       preset:
-        endpoint: 'agents'
-        provider: 'anthropic'
+        endpoint: 'anthropic'
         modelLabel: 'Claude Sonnet 4 (1M)'
         model: 'claude-sonnet-4-5-20250929'
-        greeting: 'Hello! I am a general purpose agent with massive context (1M tokens). I can handle complex multi-file projects and extensive codebases.'
-        promptPrefix: |-
-          You are a versatile general-purpose agent with extended context capabilities.
-
-          **Context Strength:**
-          - 1 million token context window
-          - Handle entire codebases and large projects
-          - Maintain coherence across extensive conversations
-          - Process multiple files and dependencies simultaneously
-
-          **GitHub Integration:**
-          - Comprehensive repository analysis
-          - Multi-file PR reviews
-          - Cross-repository research
-          - Long-term project planning
-
-          **Full Capabilities:**
-          - Code execution and testing
-          - Web search and research
-          - Image generation
-          - File search and analysis
-          - All development tools
         temperature: 0.3
         max_tokens: 32000
         resendFiles: true
-        execute_code: true
-        file_search: true
-        web_search: true
+        promptPrefix: |
+          You are a versatile general-purpose assistant with extended context capabilities.
         tools:
           - calculator
           - tavily_search_results_json
-          - traversaal_search
-          - google
-          - youtube
           - image_gen_oai
           - dalle
-          - wolfram
-          - serpapi
-          - open_weather
-          - stable-diffusion
-          - flux
-          - azure-ai-search
-
-    - name: 'github-general-gemini25pro'
-      label: 'GitHub General (Gemini 2.5 Pro)'
-      description: 'General purpose multimodal agent powered by Gemini 2.5 Pro with all tools and GitHub integration.'
-      iconURL: 'google'
-      group: 'agents'
-      preset:
-        endpoint: 'agents'
-        provider: 'google'
-        modelLabel: 'Gemini 2.5 Pro'
-        model: 'gemini-2.5-pro'
-        greeting: 'Hi! I am a multimodal general purpose agent powered by Gemini 2.5 Pro. I excel at processing images, code, and text together.'
-        promptPrefix: |-
-          You are a multimodal general-purpose agent with advanced vision and reasoning capabilities.
-
-          **Multimodal Strengths:**
-          - Process images, diagrams, screenshots, and code simultaneously
-          - Understand visual context in technical documentation
-          - Generate and analyze visual content
-          - Cross-reference visual and textual information
-
-          **GitHub Integration:**
-          - Repository analysis with diagram comprehension
-          - UI/UX review and feedback
-          - Documentation with visual elements
-          - Architecture visualization and analysis
-
-          **Full Toolkit:**
-          - Code execution environment
-          - Multi-source web search
-          - Image generation (DALL-E, Stable Diffusion, Flux)
-          - Data services and calculations
-          - File search and analysis
-        temperature: 0.3
-        maxOutputTokens: 32000
-        resendFiles: true
-        execute_code: true
-        file_search: true
-        web_search: true
-        tools:
-          - calculator
-          - tavily_search_results_json
-          - traversaal_search
-          - google
-          - youtube
-          - wolfram
-          - serpapi
-          - open_weather
-          - stable-diffusion
-          - flux
-          - azure-ai-search
-
-    # ========================================================================
-    # SPECIALIZED AGENTS
-    # ========================================================================
-
-    - name: 'github-devops-haiku45'
-      label: 'GitHub DevOps (Haiku 4.5)'
-      description: 'DevOps specialist for CI/CD, GitHub Actions, and infrastructure automation.'
-      iconURL: 'anthropic'
-      group: 'agents'
-      preset:
-        endpoint: 'agents'
-        provider: 'anthropic'
-        modelLabel: 'Claude Haiku 4.5'
-        model: 'claude-haiku-4-5-20251001'
-        greeting: 'DevOps agent ready! Specialized in GitHub Actions, CI/CD pipelines, and infrastructure automation.'
-        promptPrefix: |-
-          You are a DevOps specialist focused on automation and infrastructure.
-
-          **GitHub Actions Expertise:**
-          - Design and optimize workflows
-          - Debug pipeline failures
-          - Security best practices
-          - Deployment automation
-
-          **Infrastructure:**
-          - Docker and containerization
-          - Cloud platforms (AWS, Azure, GCP)
-          - Infrastructure as Code
-          - Monitoring and observability
-
-          **Automation:**
-          - Script generation and execution
-          - Log analysis
-          - Performance optimization
-          - Security scanning
-        temperature: 0.3
-        max_tokens: 32000
-        resendFiles: true
-        execute_code: true
-        file_search: true
-        web_search: true
-        tools:
-          - calculator
-          - tavily_search_results_json
-          - google
-          - serpapi
-          - wolfram
