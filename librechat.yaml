@@ -42,6 +42,18 @@ actions:
     - 'uploads.github.com'
     - 'media.githubusercontent.com'
 
+# MCP Servers Configuration - Provides access to local GitHub repos
+mcpServers:
+  github-repos:
+    type: stdio
+    command: npx
+    args:
+      - -y
+      - "@modelcontextprotocol/server-filesystem"
+      - "C:\\Users\\Mike\\Documents\\Github"
+    timeout: 60000
+    description: "Access local GitHub repositories for file reading and exploration"
+
 # Only tools that work with your available API keys
 includedTools:
   - calculator
