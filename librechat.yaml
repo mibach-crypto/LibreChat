@@ -42,17 +42,18 @@ actions:
     - 'uploads.github.com'
     - 'media.githubusercontent.com'
 
-# MCP Servers Configuration - Provides access to local GitHub repos
+# MCP Servers Configuration - GitHub API access for cloud deployment
 mcpServers:
-  github-repos:
+  github:
     type: stdio
     command: npx
     args:
       - -y
-      - "@modelcontextprotocol/server-filesystem"
-      - "C:\\Users\\Mike\\Documents\\Github"
+      - "@modelcontextprotocol/server-github"
+    env:
+      GITHUB_PERSONAL_ACCESS_TOKEN: ${GITHUB_TOKEN}
     timeout: 60000
-    description: "Access local GitHub repositories for file reading and exploration"
+    description: "Access GitHub repositories via API - works on cloud deployment"
 
 # Only tools that work with your available API keys
 includedTools:
@@ -123,6 +124,9 @@ endpoints:
       - anthropic
       - openrouter
       - cohere
+      - moonshot
+      - xai
+      - aiml
 
   # Custom endpoints
   custom:
@@ -156,6 +160,56 @@ endpoints:
       titleConvo: true
       titleModel: command-r-plus
       modelDisplayLabel: 'Cohere'
+
+    # Moonshot AI - Kimi models
+    - name: 'moonshot'
+      apiKey: ${MOONSHOT_API_KEY}
+      baseURL: 'https://api.moonshot.cn/v1'
+      models:
+        default:
+          - kimi-k2-thinking
+          - kimi-k2-thinking-turbo
+          - moonshot-v1-8k
+          - moonshot-v1-32k
+          - moonshot-v1-128k
+        fetch: false
+      titleConvo: true
+      titleModel: kimi-k2-thinking-turbo
+      modelDisplayLabel: 'Moonshot AI'
+
+    # xAI (Grok)
+    - name: 'xai'
+      apiKey: ${XAI_API_KEY}
+      baseURL: 'https://api.x.ai/v1'
+      models:
+        default:
+          - grok-beta
+          - grok-vision-beta
+          - grok-2-latest
+          - grok-2-vision-latest
+        fetch: true
+      titleConvo: true
+      titleModel: grok-beta
+      modelDisplayLabel: 'xAI (Grok)'
+
+    # AI/ML API - OpenAI-compatible endpoint
+    - name: 'aiml'
+      apiKey: ${AIML_API_KEY}
+      baseURL: 'https://api.aimlapi.com/v1'
+      headers:
+        x-librechat-body-parentmessageid: '{{LIBRECHAT_BODY_PARENTMESSAGEID}}'
+      models:
+        default:
+          - meta-llama/llama-3.1-405b-instruct
+          - meta-llama/llama-3.1-70b-instruct
+          - meta-llama/llama-3.1-8b-instruct
+          - mistralai/mixtral-8x22b-instruct
+          - anthropic/claude-3.5-sonnet
+          - google/gemini-pro-1.5
+        fetch: true
+      titleConvo: true
+      titleModel: meta-llama/llama-3.1-70b-instruct
+      modelDisplayLabel: 'AI/ML API'
 
 fileConfig:
   endpoints:
