@@ -123,10 +123,14 @@ endpoints:
       - openAI
       - anthropic
       - openrouter
+      - openrouter-reasoning
       - cohere
       - moonshot
       - xai
       - aiml
+      - huggingface-medical
+      - huggingface-code
+      - huggingface-reasoning
 
   # Custom endpoints
   custom:
@@ -211,6 +215,91 @@ endpoints:
       titleModel: meta-llama/llama-3.1-70b-instruct
       modelDisplayLabel: 'AI/ML API'
 
+    # Hugging Face - Medical AI Models
+    - name: 'huggingface-medical'
+      apiKey: ${HUGGINGFACE_TOKEN}
+      baseURL: 'https://api-inference.huggingface.co/models'
+      models:
+        default:
+          - ruslanmv/Medical-Llama3-8B
+          - ContactDoctor/Bio-Medical-Llama-3-8B
+          - Intelligent-Internet/II-Medical-8B
+          - FreedomIntelligence/HuatuoGPT-o1-8B
+          - microsoft/biogpt
+          - zl111/ChatDoctor
+        fetch: false
+      titleConvo: true
+      titleModel: ruslanmv/Medical-Llama3-8B
+      modelDisplayLabel: 'HF Medical AI'
+      dropParams:
+        - top_p
+        - frequency_penalty
+        - presence_penalty
+
+    # OpenRouter - TOP REASONING MODELS (DeepSeek R1, QwQ)
+    - name: 'openrouter-reasoning'
+      apiKey: ${OPENROUTER_KEY}
+      baseURL: 'https://openrouter.ai/api/v1'
+      headers:
+        x-librechat-body-parentmessageid: '{{LIBRECHAT_BODY_PARENTMESSAGEID}}'
+      models:
+        default:
+          - deepseek/deepseek-r1
+          - deepseek/deepseek-r1:free
+          - deepseek/deepseek-r1-distill-qwen-32b
+          - deepseek/deepseek-r1-distill-llama-70b
+          - qwen/qwq-32b-preview
+          - qwen/qwen-2.5-coder-32b-instruct
+          - nvidia/llama-3.1-nemotron-70b-instruct
+        fetch: true
+      titleConvo: true
+      titleModel: deepseek/deepseek-r1-distill-qwen-32b
+      modelDisplayLabel: 'Top Reasoning'
+      dropParams:
+        - stop
+
+    # Hugging Face - SOTA REASONING MODELS (Baidu ERNIE, Qwen3, Microsoft Phi-4)
+    - name: 'huggingface-reasoning'
+      apiKey: ${HUGGINGFACE_TOKEN}
+      baseURL: 'https://api-inference.huggingface.co/models'
+      models:
+        default:
+          - baidu/ERNIE-4.5-300B-A47B-PT
+          - baidu/ERNIE-4.5-21B-A3B-Thinking
+          - Qwen/Qwen3-235B-A22B
+          - microsoft/Phi-4-reasoning
+          - zai-org/GLM-4.5V
+          - HuggingFaceTB/SmolLM3-8B
+        fetch: false
+      titleConvo: true
+      titleModel: baidu/ERNIE-4.5-21B-A3B-Thinking
+      modelDisplayLabel: 'HF Reasoning'
+      dropParams:
+        - top_p
+        - frequency_penalty
+        - presence_penalty
+
+    # Hugging Face - Code & SQL Models
+    - name: 'huggingface-code'
+      apiKey: ${HUGGINGFACE_TOKEN}
+      baseURL: 'https://api-inference.huggingface.co/models'
+      models:
+        default:
+          - Qwen/Qwen2.5-Coder-32B-Instruct
+          - Qwen/Qwen3-Coder-30B-A3B-Instruct
+          - deepseek-ai/deepseek-coder-6.7b-instruct
+          - deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct
+          - defog/sqlcoder-7b-2
+          - defog/llama-3-sqlcoder-8b
+        fetch: false
+      titleConvo: true
+      titleModel: Qwen/Qwen2.5-Coder-32B-Instruct
+      modelDisplayLabel: 'HF Code'
+      dropParams:
+        - top_p
+        - frequency_penalty
+        - presence_penalty
+
 fileConfig:
   endpoints:
     assistants:
@@ -236,8 +325,12 @@ modelSpecs:
     - openAI
     - anthropic
     - openrouter
+    - openrouter-reasoning
     - assistants
     - agents
+    - huggingface-medical
+    - huggingface-code
+    - huggingface-reasoning
   list:
     # ========================================================================
     # PRIMARY CODING PRESETS
@@ -379,3 +472,282 @@ modelSpecs:
           - tavily_search_results_json
           - image_gen_oai
           - dalle
+
+    # ========================================================================
+    # MEDICAL AI PRESETS
+    # ========================================================================
+    - name: 'medical-llama3-8b'
+      label: 'Medical AI (Llama3-8B)'
+      description: 'Specialized medical AI for clinical documentation, diagnosis support, and medical Q&A.'
+      iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
+      group: 'huggingface-medical'
+      preset:
+        endpoint: 'huggingface-medical'
+        modelLabel: 'Medical-Llama3-8B'
+        model: 'ruslanmv/Medical-Llama3-8B'
+        temperature: 0.2
+        max_tokens: 4096
+        resendFiles: true
+        promptPrefix: |
+          You are a specialized medical AI assistant. Provide accurate medical information based on clinical evidence. Always remind users to consult with healthcare professionals for medical decisions.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'medical-reasoning'
+      label: 'Medical Reasoning AI'
+      description: 'Advanced medical reasoning model for complex diagnosis and clinical decision support.'
+      iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
+      group: 'huggingface-medical'
+      preset:
+        endpoint: 'huggingface-medical'
+        modelLabel: 'HuatuoGPT-o1-8B'
+        model: 'FreedomIntelligence/HuatuoGPT-o1-8B'
+        temperature: 0.2
+        max_tokens: 4096
+        resendFiles: true
+        promptPrefix: |
+          You are an advanced medical reasoning AI with chain-of-thought capabilities. Break down medical problems systematically and provide evidence-based reasoning. Always include disclaimers about consulting healthcare professionals.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'biomedical-ai'
+      label: 'Biomedical AI'
+      description: 'Biomedical assistant specialized in research, literature review, and medical knowledge.'
+      iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
+      group: 'huggingface-medical'
+      preset:
+        endpoint: 'huggingface-medical'
+        modelLabel: 'Bio-Medical-Llama-3-8B'
+        model: 'ContactDoctor/Bio-Medical-Llama-3-8B'
+        temperature: 0.2
+        max_tokens: 4096
+        resendFiles: true
+        promptPrefix: |
+          You are a biomedical AI specialist. Assist with biomedical research, literature analysis, and medical terminology. Provide evidence-based information and cite sources when possible.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    # ========================================================================
+    # HF SOTA REASONING MODELS (Baidu ERNIE, Qwen3, Microsoft Phi-4, GLM)
+    # ========================================================================
+    - name: 'reasoning-ernie-300b'
+      label: 'ERNIE 4.5 (300B MoE)'
+      description: 'Baidu ERNIE 4.5 - 300B MoE (47B active). SOTA Chinese/English reasoning, rivals DeepSeek R1.'
+      iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
+      group: 'huggingface-reasoning'
+      preset:
+        endpoint: 'huggingface-reasoning'
+        modelLabel: 'ERNIE-4.5-300B'
+        model: 'baidu/ERNIE-4.5-300B-A47B-PT'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are ERNIE 4.5, a 300B MoE reasoning powerhouse from Baidu. Use systematic reasoning with bilingual (English/Chinese) capability.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'reasoning-ernie-21b-thinking'
+      label: 'ERNIE 4.5 Thinking (21B)'
+      description: 'Baidu ERNIE 4.5 Thinking - 21B MoE optimized for complex reasoning tasks with chain-of-thought.'
+      iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
+      group: 'huggingface-reasoning'
+      preset:
+        endpoint: 'huggingface-reasoning'
+        modelLabel: 'ERNIE-4.5-Thinking'
+        model: 'baidu/ERNIE-4.5-21B-A3B-Thinking'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are ERNIE 4.5 Thinking, optimized for highly complex reasoning tasks. Show your step-by-step thinking process.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'reasoning-qwen3-235b'
+      label: 'Qwen3 (235B MoE)'
+      description: 'Alibaba Qwen3-235B - 235B MoE with unique thinking mode toggle. Competes with DeepSeek R1 and o3-mini.'
+      iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
+      group: 'huggingface-reasoning'
+      preset:
+        endpoint: 'huggingface-reasoning'
+        modelLabel: 'Qwen3-235B'
+        model: 'Qwen/Qwen3-235B-A22B'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are Qwen3-235B with thinking mode enabled. Generate <think>...</think> blocks to show your reasoning process.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'reasoning-phi4'
+      label: 'Phi-4 Reasoning (14B)'
+      description: 'Microsoft Phi-4 - 14B that approaches DeepSeek R1 performance. Excels at AIME, GPQA, OmniMath.'
+      iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
+      group: 'huggingface-reasoning'
+      preset:
+        endpoint: 'huggingface-reasoning'
+        modelLabel: 'Phi-4-Reasoning'
+        model: 'microsoft/Phi-4-reasoning'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are Phi-4, a compact but powerful reasoning model. Excel at mathematical and scientific reasoning.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'reasoning-glm45v'
+      label: 'GLM-4.5V (Zhipu AI)'
+      description: 'Zhipu AI GLM-4.5V - Top-ranked on HF leaderboard. Tsinghua spin-off model with strong reasoning.'
+      iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
+      group: 'huggingface-reasoning'
+      preset:
+        endpoint: 'huggingface-reasoning'
+        modelLabel: 'GLM-4.5V'
+        model: 'zai-org/GLM-4.5V'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are GLM-4.5V from Zhipu AI. Apply advanced reasoning with multimodal understanding capabilities.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    # ========================================================================
+    # TOP REASONING MODELS (OPENROUTER)
+    # ========================================================================
+    - name: 'reasoning-deepseek-r1'
+      label: 'DeepSeek R1 (671B)'
+      description: 'DeepSeek R1 - 671B parameter reasoning powerhouse. Competes with o1/o3.'
+      iconURL: 'https://deepseek.com/favicon.ico'
+      group: 'openrouter-reasoning'
+      preset:
+        endpoint: 'openrouter-reasoning'
+        modelLabel: 'DeepSeek R1'
+        model: 'deepseek/deepseek-r1'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are DeepSeek R1, an advanced reasoning model. Use chain-of-thought to break down complex problems systematically.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'reasoning-r1-qwen-32b'
+      label: 'DeepSeek R1 Distill (32B)'
+      description: 'DeepSeek R1 distilled to Qwen 32B - excellent reasoning at lower cost.'
+      iconURL: 'https://deepseek.com/favicon.ico'
+      group: 'openrouter-reasoning'
+      preset:
+        endpoint: 'openrouter-reasoning'
+        modelLabel: 'R1-Distill-Qwen-32B'
+        model: 'deepseek/deepseek-r1-distill-qwen-32b'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are DeepSeek R1 (distilled). Apply systematic reasoning and show your thinking process.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'reasoning-qwq-32b'
+      label: 'QwQ-32B (Qwen Reasoning)'
+      description: 'Qwen QwQ-32B - advanced reasoning model with questioning approach.'
+      iconURL: 'https://qianwen-res.oss-cn-beijing.aliyuncs.com/logo_qwen.jpg'
+      group: 'openrouter-reasoning'
+      preset:
+        endpoint: 'openrouter-reasoning'
+        modelLabel: 'QwQ-32B'
+        model: 'qwen/qwq-32b-preview'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are QwQ-32B, a reasoning model that questions and analyzes deeply. Break down problems through questioning.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'reasoning-nemotron-70b'
+      label: 'Nemotron 70B'
+      description: 'NVIDIA Nemotron 70B - top reasoning and instruction following.'
+      iconURL: 'https://www.nvidia.com/favicon.ico'
+      group: 'openrouter-reasoning'
+      preset:
+        endpoint: 'openrouter-reasoning'
+        modelLabel: 'Nemotron-70B'
+        model: 'nvidia/llama-3.1-nemotron-70b-instruct'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are Nemotron 70B, optimized for complex reasoning and instruction following. Provide detailed, accurate responses.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    # ========================================================================
+    # CODE GENERATION PRESETS (HUGGING FACE)
+    # ========================================================================
+    - name: 'coder-qwen-32b'
+      label: 'Coder (Qwen 32B)'
+      description: 'State-of-the-art code generation with Qwen2.5-Coder-32B - matches GPT-4o performance.'
+      iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
+      group: 'huggingface-code'
+      preset:
+        endpoint: 'huggingface-code'
+        modelLabel: 'Qwen2.5-Coder-32B'
+        model: 'Qwen/Qwen2.5-Coder-32B-Instruct'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are an expert coding assistant powered by Qwen2.5-Coder-32B. Write clean, efficient, well-documented code. Explain your implementation choices.
+        tools:
+          - calculator
+
+    - name: 'coder-deepseek-v2'
+      label: 'Coder (DeepSeek V2)'
+      description: 'DeepSeek Coder V2 - advanced code generation and understanding.'
+      iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
+      group: 'huggingface-code'
+      preset:
+        endpoint: 'huggingface-code'
+        modelLabel: 'DeepSeek-Coder-V2-Lite'
+        model: 'deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are an expert coding assistant powered by DeepSeek Coder V2. Write production-quality code with best practices.
+        tools:
+          - calculator
+
+    - name: 'sql-specialist'
+      label: 'SQL Specialist'
+      description: 'Specialized SQL code generation and database query optimization.'
+      iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
+      group: 'huggingface-code'
+      preset:
+        endpoint: 'huggingface-code'
+        modelLabel: 'SQLCoder-7B'
+        model: 'defog/sqlcoder-7b-2'
+        temperature: 0.1
+        max_tokens: 4096
+        resendFiles: true
+        promptPrefix: |
+          You are a SQL specialist. Generate efficient, optimized SQL queries. Explain query structure and provide alternative approaches when relevant.
+        tools:
+          - calculator
