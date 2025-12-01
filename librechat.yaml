@@ -95,6 +95,20 @@ endpoints:
     titleConvo: true
     titleModel: claude-3-5-haiku-20241022
 
+  # Google Gemini - You have this API key
+  google:
+    apiKey: ${GOOGLE_KEY}
+    models:
+      default:
+        - gemini-2.0-flash-exp
+        - gemini-1.5-pro-latest
+        - gemini-1.5-flash-latest
+        - gemini-1.5-pro
+        - gemini-1.5-flash
+      fetch: true
+    titleConvo: true
+    titleModel: gemini-1.5-flash
+
   # Assistants API
   assistants:
     disableBuilder: false
@@ -122,6 +136,7 @@ endpoints:
     allowedProviders:
       - openAI
       - anthropic
+      - google
       - openrouter
       - openrouter-reasoning
       - cohere
@@ -215,10 +230,10 @@ endpoints:
       titleModel: meta-llama/llama-3.1-70b-instruct
       modelDisplayLabel: 'AI/ML API'
 
-    # Hugging Face - Medical AI Models
+    # Hugging Face - Medical AI Models (via Inference Router)
     - name: 'huggingface-medical'
-      apiKey: ${HUGGINGFACE_TOKEN}
-      baseURL: 'https://api-inference.huggingface.co/models'
+      apiKey: ${HUGGINGFACE_API_KEY}
+      baseURL: 'https://router.huggingface.co/v1'
       models:
         default:
           - ruslanmv/Medical-Llama3-8B
@@ -260,8 +275,8 @@ endpoints:
 
     # Hugging Face - SOTA REASONING MODELS (Baidu ERNIE, Qwen3, Microsoft Phi-4)
     - name: 'huggingface-reasoning'
-      apiKey: ${HUGGINGFACE_TOKEN}
-      baseURL: 'https://api-inference.huggingface.co/models'
+      apiKey: ${HUGGINGFACE_API_KEY}
+      baseURL: 'https://router.huggingface.co/v1'
       models:
         default:
           - baidu/ERNIE-4.5-300B-A47B-PT
@@ -281,8 +296,8 @@ endpoints:
 
     # Hugging Face - Code & SQL Models
     - name: 'huggingface-code'
-      apiKey: ${HUGGINGFACE_TOKEN}
-      baseURL: 'https://api-inference.huggingface.co/models'
+      apiKey: ${HUGGINGFACE_API_KEY}
+      baseURL: 'https://router.huggingface.co/v1'
       models:
         default:
           - Qwen/Qwen2.5-Coder-32B-Instruct
@@ -324,6 +339,7 @@ modelSpecs:
   addedEndpoints:
     - openAI
     - anthropic
+    - google
     - openrouter
     - openrouter-reasoning
     - assistants
