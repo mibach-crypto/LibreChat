@@ -55,7 +55,7 @@ mcpServers:
     timeout: 60000
     description: "Access GitHub repositories via API - works on cloud deployment"
 
-# Only tools that work with your available API keys
+# Tools configuration
 includedTools:
   - calculator
   - tavily_search_results_json
@@ -64,43 +64,77 @@ includedTools:
   - dalle
 
 endpoints:
-  # OpenAI - You have this API key
+  # ============================================================================
+  # OpenAI - GPT-5.1, GPT-5 Codex, o3, o4, gpt-oss models
+  # ============================================================================
   openAI:
     apiKey: ${OPENAI_API_KEY}
     models:
       default:
+        # GPT-5 Series (Latest)
+        - gpt-5.1
+        - gpt-5.1-high
+        - gpt-5-codex
+        - gpt-5-codex-high
+        # o-series Reasoning Models
         - o3-pro
         - o3
         - o4-mini-high
         - o4-mini
+        # GPT-4o Series
         - gpt-4o
         - gpt-4o-mini
+        # gpt-oss Open Source Models (via OpenAI API)
+        - gpt-oss-120b
+        - gpt-oss-120b-high
+        - gpt-oss-20b
+        - gpt-oss-20b-high
       fetch: false
     titleConvo: true
     titleModel: gpt-4o-mini
     fileUploader:
       enable: true
 
-  # Anthropic - You have this API key
+  # ============================================================================
+  # Anthropic - Claude Opus 4.5, Sonnet 4.5, Haiku 4.5
+  # ============================================================================
   anthropic:
     apiKey: ${ANTHROPIC_API_KEY}
     models:
       default:
-        - claude-opus-4.1-20250514
+        # Claude 4.5 Series (Latest)
+        - claude-opus-4-5-20250929
         - claude-sonnet-4-5-20250929
         - claude-haiku-4-5-20251001
+        # Claude 4 Series
+        - claude-opus-4-20250514
+        - claude-sonnet-4-20250514
+        # Claude 3.5 Series
         - claude-3-5-sonnet-20241022
         - claude-3-5-haiku-20241022
       fetch: false
     titleConvo: true
     titleModel: claude-3-5-haiku-20241022
 
-  # Google Gemini - You have this API key
+  # ============================================================================
+  # Google Gemini - Gemini 3 Pro Preview, 2.5 Pro/Flash
+  # ============================================================================
   google:
     apiKey: ${GOOGLE_KEY}
     models:
       default:
+        # Gemini 3 Series (Latest)
+        - gemini-3-pro-preview
+        - gemini-3-pro-preview-high
+        # Gemini 2.5 Series
+        - gemini-2.5-pro
+        - gemini-2.5-pro-preview
+        - gemini-2.5-flash
+        - gemini-2.5-flash-sep
+        # Gemini 2.0 Series
         - gemini-2.0-flash-exp
+        - gemini-2.0-flash
+        # Gemini 1.5 Series
         - gemini-1.5-pro-latest
         - gemini-1.5-flash-latest
         - gemini-1.5-pro
@@ -123,7 +157,9 @@ endpoints:
       - tools
       - image_vision
 
-  # Agents configuration
+  # ============================================================================
+  # Agents configuration - Multi-provider agent support
+  # ============================================================================
   agents:
     recursionLimit: 32
     maxRecursionLimit: 64
@@ -139,17 +175,25 @@ endpoints:
       - google
       - openrouter
       - openrouter-reasoning
+      - openrouter-sota
       - cohere
       - moonshot
       - xai
       - aiml
+      - minimax
+      - deepseek
       - huggingface-medical
       - huggingface-code
       - huggingface-reasoning
+      - amazon-bedrock
 
+  # ============================================================================
   # Custom endpoints
+  # ============================================================================
   custom:
-    # OpenRouter - You have this API key
+    # ==========================================================================
+    # OpenRouter - Main endpoint for diverse models
+    # ==========================================================================
     - name: 'openrouter'
       apiKey: ${OPENROUTER_KEY}
       baseURL: 'https://openrouter.ai/api/v1'
@@ -159,6 +203,7 @@ endpoints:
         - stop
       models:
         default:
+          - meta-llama/llama-4-maverick
           - meta-llama/llama-3-70b-instruct
           - meta-llama/llama-3-8b-instruct
           - mistralai/mixtral-8x7b-instruct
@@ -167,41 +212,86 @@ endpoints:
       titleModel: meta-llama/llama-3-70b-instruct
       modelDisplayLabel: 'OpenRouter'
 
-    # Cohere - You have this API key
-    - name: 'cohere'
-      apiKey: ${COHERE_API_KEY}
-      baseURL: 'https://api.cohere.com/v1'
+    # ==========================================================================
+    # OpenRouter SOTA - Top reasoning and frontier models
+    # ==========================================================================
+    - name: 'openrouter-sota'
+      apiKey: ${OPENROUTER_KEY}
+      baseURL: 'https://openrouter.ai/api/v1'
+      headers:
+        x-librechat-body-parentmessageid: '{{LIBRECHAT_BODY_PARENTMESSAGEID}}'
+      dropParams:
+        - stop
       models:
         default:
-          - command-r-plus
-          - command-r
-        fetch: false
+          # Kimi K2 Thinking (Moonshot AI)
+          - moonshot/kimi-k2-thinking
+          - moonshot/kimi-k2-0905
+          # Grok 4 Series (xAI)
+          - x-ai/grok-4
+          - x-ai/grok-4.1-fast
+          # MiniMax-M2
+          - minimax/minimax-m2
+          # Apriel v1.5 (ServiceNow)
+          - servicenow/apriel-v1.5-15b-thinker
+          # NVIDIA Llama Nemotron
+          - nvidia/llama-nemotron-super-49b-v1.5
+          # EXAONE 4.0 (LG AI Research)
+          - lgai/exaone-4.0-32b
+          # Llama 4 Maverick (Meta)
+          - meta-llama/llama-4-maverick
+          # Magistral Medium 1.2 (Mistral)
+          - mistralai/magistral-medium-1.2
+          # Reka Flash 3
+          - reka/reka-flash-3
+          # DBRX (Databricks)
+          - databricks/dbrx-instruct
+        fetch: true
       titleConvo: true
-      titleModel: command-r-plus
-      modelDisplayLabel: 'Cohere'
+      titleModel: moonshot/kimi-k2-thinking
+      modelDisplayLabel: 'SOTA Models'
 
-    # Moonshot AI - Kimi models
-    - name: 'moonshot'
-      apiKey: ${MOONSHOT_API_KEY}
-      baseURL: 'https://api.moonshot.cn/v1'
+    # ==========================================================================
+    # OpenRouter Reasoning - DeepSeek R1, QwQ, reasoning specialists
+    # ==========================================================================
+    - name: 'openrouter-reasoning'
+      apiKey: ${OPENROUTER_KEY}
+      baseURL: 'https://openrouter.ai/api/v1'
+      headers:
+        x-librechat-body-parentmessageid: '{{LIBRECHAT_BODY_PARENTMESSAGEID}}'
+      dropParams:
+        - stop
       models:
         default:
-          - kimi-k2-thinking
-          - kimi-k2-thinking-turbo
-          - moonshot-v1-8k
-          - moonshot-v1-32k
-          - moonshot-v1-128k
-        fetch: false
+          # DeepSeek R1 Series
+          - deepseek/deepseek-r1
+          - deepseek/deepseek-r1-0528
+          - deepseek/deepseek-r1:free
+          - deepseek/deepseek-r1-distill-qwen-32b
+          - deepseek/deepseek-r1-distill-llama-70b
+          # DeepSeek V3 Series
+          - deepseek/deepseek-v3.1-terminus
+          - deepseek/deepseek-v3.2-exp
+          # Qwen QwQ Reasoning
+          - qwen/qwq-32b-preview
+          - qwen/qwen-2.5-coder-32b-instruct
+          # NVIDIA Nemotron
+          - nvidia/llama-3.1-nemotron-70b-instruct
+        fetch: true
       titleConvo: true
-      titleModel: kimi-k2-thinking-turbo
-      modelDisplayLabel: 'Moonshot AI'
+      titleModel: deepseek/deepseek-r1-distill-qwen-32b
+      modelDisplayLabel: 'Top Reasoning'
 
-    # xAI (Grok)
+    # ==========================================================================
+    # xAI (Grok) - Grok 4, Grok 4.1 Fast
+    # ==========================================================================
     - name: 'xai'
       apiKey: ${XAI_API_KEY}
       baseURL: 'https://api.x.ai/v1'
       models:
         default:
+          - grok-4
+          - grok-4.1-fast
           - grok-beta
           - grok-vision-beta
           - grok-2-latest
@@ -211,7 +301,80 @@ endpoints:
       titleModel: grok-beta
       modelDisplayLabel: 'xAI (Grok)'
 
-    # AI/ML API - OpenAI-compatible endpoint
+    # ==========================================================================
+    # Moonshot AI - Kimi K2 Thinking, K2 0905
+    # ==========================================================================
+    - name: 'moonshot'
+      apiKey: ${MOONSHOT_API_KEY}
+      baseURL: 'https://api.moonshot.cn/v1'
+      models:
+        default:
+          - kimi-k2-thinking
+          - kimi-k2-0905
+          - kimi-k2-thinking-turbo
+          - moonshot-v1-8k
+          - moonshot-v1-32k
+          - moonshot-v1-128k
+        fetch: false
+      titleConvo: true
+      titleModel: kimi-k2-thinking-turbo
+      modelDisplayLabel: 'Moonshot AI (Kimi)'
+
+    # ==========================================================================
+    # DeepSeek Direct API - V3.1 Terminus, V3.2 Exp, R1 0528
+    # ==========================================================================
+    - name: 'deepseek'
+      apiKey: ${DEEPSEEK_API_KEY}
+      baseURL: 'https://api.deepseek.com/v1'
+      models:
+        default:
+          - deepseek-v3.1-terminus
+          - deepseek-v3.2-exp
+          - deepseek-r1-0528
+          - deepseek-chat
+          - deepseek-coder
+          - deepseek-reasoner
+        fetch: false
+      titleConvo: true
+      titleModel: deepseek-chat
+      modelDisplayLabel: 'DeepSeek'
+
+    # ==========================================================================
+    # MiniMax - MiniMax-M2
+    # ==========================================================================
+    - name: 'minimax'
+      apiKey: ${MINIMAX_API_KEY}
+      baseURL: 'https://api.minimax.chat/v1'
+      models:
+        default:
+          - minimax-m2
+          - abab6.5-chat
+          - abab6.5s-chat
+          - abab5.5-chat
+        fetch: false
+      titleConvo: true
+      titleModel: minimax-m2
+      modelDisplayLabel: 'MiniMax'
+
+    # ==========================================================================
+    # Cohere - Command A, Command R+
+    # ==========================================================================
+    - name: 'cohere'
+      apiKey: ${COHERE_API_KEY}
+      baseURL: 'https://api.cohere.com/v1'
+      models:
+        default:
+          - command-a
+          - command-r-plus
+          - command-r
+        fetch: false
+      titleConvo: true
+      titleModel: command-r-plus
+      modelDisplayLabel: 'Cohere'
+
+    # ==========================================================================
+    # AI/ML API - Various providers through unified API
+    # ==========================================================================
     - name: 'aiml'
       apiKey: ${AIML_API_KEY}
       baseURL: 'https://api.aimlapi.com/v1'
@@ -230,9 +393,31 @@ endpoints:
       titleModel: meta-llama/llama-3.1-70b-instruct
       modelDisplayLabel: 'AI/ML API'
 
+    # ==========================================================================
+    # Amazon Bedrock (via OpenRouter) - Nova Premier
+    # ==========================================================================
+    - name: 'amazon-bedrock'
+      apiKey: ${OPENROUTER_KEY}
+      baseURL: 'https://openrouter.ai/api/v1'
+      headers:
+        x-librechat-body-parentmessageid: '{{LIBRECHAT_BODY_PARENTMESSAGEID}}'
+      dropParams:
+        - stop
+      models:
+        default:
+          - amazon/nova-premier
+          - amazon/nova-pro
+          - amazon/nova-lite
+        fetch: true
+      titleConvo: true
+      titleModel: amazon/nova-pro
+      modelDisplayLabel: 'Amazon Nova'
+
+    # ==========================================================================
     # Hugging Face - Medical AI Models (via Inference Router)
+    # ==========================================================================
     - name: 'huggingface-medical'
-      apiKey: ${HUGGINGFACE_API_KEY}
+      apiKey: ${HUGGINGFACE_TOKEN}
       baseURL: 'https://router.huggingface.co/v1'
       models:
         default:
@@ -242,6 +427,10 @@ endpoints:
           - FreedomIntelligence/HuatuoGPT-o1-8B
           - microsoft/biogpt
           - zl111/ChatDoctor
+          - epfl-llm/meditron-70b
+          - johnsnowlabs/JSL-MedLlama-3-8B-v9
+          - AdaptLLM/medicine-chat
+          - aaditya/OpenBioLLM-Llama3-8B
         fetch: false
       titleConvo: true
       titleModel: ruslanmv/Medical-Llama3-8B
@@ -251,52 +440,44 @@ endpoints:
         - frequency_penalty
         - presence_penalty
 
-    # OpenRouter - TOP REASONING MODELS (DeepSeek R1, QwQ)
-    - name: 'openrouter-reasoning'
-      apiKey: ${OPENROUTER_KEY}
-      baseURL: 'https://openrouter.ai/api/v1'
-      headers:
-        x-librechat-body-parentmessageid: '{{LIBRECHAT_BODY_PARENTMESSAGEID}}'
-      models:
-        default:
-          - deepseek/deepseek-r1
-          - deepseek/deepseek-r1:free
-          - deepseek/deepseek-r1-distill-qwen-32b
-          - deepseek/deepseek-r1-distill-llama-70b
-          - qwen/qwq-32b-preview
-          - qwen/qwen-2.5-coder-32b-instruct
-          - nvidia/llama-3.1-nemotron-70b-instruct
-        fetch: true
-      titleConvo: true
-      titleModel: deepseek/deepseek-r1-distill-qwen-32b
-      modelDisplayLabel: 'Top Reasoning'
-      dropParams:
-        - stop
-
-    # Hugging Face - SOTA REASONING MODELS (Baidu ERNIE, Qwen3, Microsoft Phi-4)
+    # ==========================================================================
+    # Hugging Face - SOTA Reasoning Models (Qwen3, GLM-4.6, Phi-4, etc.)
+    # ==========================================================================
     - name: 'huggingface-reasoning'
-      apiKey: ${HUGGINGFACE_API_KEY}
+      apiKey: ${HUGGINGFACE_TOKEN}
       baseURL: 'https://router.huggingface.co/v1'
       models:
         default:
+          # Qwen3 235B A22B 2507 (Alibaba)
+          - Qwen/Qwen3-235B-A22B-2507
+          - Qwen/Qwen3-235B-A22B
+          # GLM-4.6 (Zhipu AI/ZAI)
+          - THUDM/GLM-4.6
+          - zai-org/GLM-4.5V
+          # Phi-4 (Microsoft)
+          - microsoft/Phi-4-reasoning
+          - microsoft/phi-4
+          # Baidu ERNIE
           - baidu/ERNIE-4.5-300B-A47B-PT
           - baidu/ERNIE-4.5-21B-A3B-Thinking
-          - Qwen/Qwen3-235B-A22B
-          - microsoft/Phi-4-reasoning
-          - zai-org/GLM-4.5V
+          # Jamba Reasoning 3B (AI21 Labs)
+          - AI21-Labs/Jamba-Reasoning-3B
+          # SmolLM
           - HuggingFaceTB/SmolLM3-8B
         fetch: false
       titleConvo: true
-      titleModel: baidu/ERNIE-4.5-21B-A3B-Thinking
+      titleModel: Qwen/Qwen3-235B-A22B
       modelDisplayLabel: 'HF Reasoning'
       dropParams:
         - top_p
         - frequency_penalty
         - presence_penalty
 
+    # ==========================================================================
     # Hugging Face - Code & SQL Models
+    # ==========================================================================
     - name: 'huggingface-code'
-      apiKey: ${HUGGINGFACE_API_KEY}
+      apiKey: ${HUGGINGFACE_TOKEN}
       baseURL: 'https://router.huggingface.co/v1'
       models:
         default:
@@ -342,95 +523,536 @@ modelSpecs:
     - google
     - openrouter
     - openrouter-reasoning
+    - openrouter-sota
     - assistants
     - agents
+    - xai
+    - moonshot
+    - deepseek
+    - minimax
+    - cohere
+    - amazon-bedrock
     - huggingface-medical
     - huggingface-code
     - huggingface-reasoning
   list:
     # ========================================================================
-    # PRIMARY CODING PRESETS
+    # TOP SOTA MODELS - PRIMARY PRESETS
     # ========================================================================
-    - name: 'coder-haiku45'
-      label: 'Coder (Haiku 4.5)'
-      description: 'Primary coding preset powered by Claude Haiku 4.5 - fast and efficient.'
+    - name: 'sota-gemini3-pro'
+      label: 'Gemini 3 Pro Preview (HIGH)'
+      description: 'Google Gemini 3 Pro Preview - latest frontier model with enhanced reasoning.'
+      iconURL: 'google'
+      group: 'google'
+      preset:
+        endpoint: 'google'
+        modelLabel: 'Gemini 3 Pro Preview'
+        model: 'gemini-3-pro-preview-high'
+        temperature: 0.3
+        max_tokens: 32000
+        resendFiles: true
+        promptPrefix: |
+          You are Gemini 3 Pro, Google's most advanced AI model with enhanced reasoning and multimodal capabilities.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-opus45'
+      label: 'Claude Opus 4.5'
+      description: 'Anthropic Claude Opus 4.5 - flagship model with extended context and superior reasoning.'
       iconURL: 'anthropic'
       group: 'anthropic'
       preset:
         endpoint: 'anthropic'
-        modelLabel: 'Claude Haiku 4.5'
+        modelLabel: 'Claude Opus 4.5'
+        model: 'claude-opus-4-5-20250929'
+        temperature: 0.3
+        max_tokens: 32000
+        resendFiles: true
+        promptPrefix: |
+          You are Claude Opus 4.5, Anthropic's most capable AI assistant with exceptional reasoning and analysis abilities.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-gpt51-high'
+      label: 'GPT-5.1 (HIGH)'
+      description: 'OpenAI GPT-5.1 High - latest frontier model with maximum capability.'
+      iconURL: 'openAI'
+      group: 'openAI'
+      preset:
+        endpoint: 'openAI'
+        modelLabel: 'GPT-5.1 (HIGH)'
+        model: 'gpt-5.1-high'
+        temperature: 0.3
+        max_tokens: 100000
+        resendFiles: true
+        promptPrefix: |
+          You are GPT-5.1, OpenAI's most advanced AI model with superior reasoning and coding capabilities.
+        tools:
+          - calculator
+          - tavily_search_results_json
+          - image_gen_oai
+
+    - name: 'sota-gpt5-codex'
+      label: 'GPT-5 Codex (HIGH)'
+      description: 'OpenAI GPT-5 Codex - specialized for advanced code generation and analysis.'
+      iconURL: 'openAI'
+      group: 'openAI'
+      preset:
+        endpoint: 'openAI'
+        modelLabel: 'GPT-5 Codex (HIGH)'
+        model: 'gpt-5-codex-high'
+        temperature: 0.2
+        max_tokens: 100000
+        resendFiles: true
+        promptPrefix: |
+          You are GPT-5 Codex, OpenAI's specialized model for advanced code generation, debugging, and software engineering.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-kimi-k2-thinking'
+      label: 'Kimi K2 Thinking'
+      description: 'Moonshot AI Kimi K2 Thinking - advanced reasoning model with deep analysis capabilities.'
+      iconURL: 'https://www.moonshot.cn/favicon.ico'
+      group: 'moonshot'
+      preset:
+        endpoint: 'moonshot'
+        modelLabel: 'Kimi K2 Thinking'
+        model: 'kimi-k2-thinking'
+        temperature: 0.3
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are Kimi K2 Thinking, an advanced reasoning AI. Apply systematic chain-of-thought analysis to complex problems.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-grok4'
+      label: 'Grok 4'
+      description: 'xAI Grok 4 - frontier model with real-time knowledge and witty personality.'
+      iconURL: 'https://x.ai/favicon.ico'
+      group: 'xai'
+      preset:
+        endpoint: 'xai'
+        modelLabel: 'Grok 4'
+        model: 'grok-4'
+        temperature: 0.3
+        max_tokens: 32000
+        resendFiles: true
+        promptPrefix: |
+          You are Grok 4 from xAI, an advanced AI with real-time knowledge and exceptional reasoning abilities.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-grok41-fast'
+      label: 'Grok 4.1 Fast'
+      description: 'xAI Grok 4.1 Fast - optimized for speed while maintaining high capability.'
+      iconURL: 'https://x.ai/favicon.ico'
+      group: 'xai'
+      preset:
+        endpoint: 'xai'
+        modelLabel: 'Grok 4.1 Fast'
+        model: 'grok-4.1-fast'
+        temperature: 0.3
+        max_tokens: 32000
+        resendFiles: true
+        promptPrefix: |
+          You are Grok 4.1 Fast, optimized for rapid responses with excellent reasoning capabilities.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-minimax-m2'
+      label: 'MiniMax-M2'
+      description: 'MiniMax M2 - high-performance model with strong multilingual and reasoning abilities.'
+      iconURL: 'https://www.minimax.io/favicon.ico'
+      group: 'minimax'
+      preset:
+        endpoint: 'minimax'
+        modelLabel: 'MiniMax-M2'
+        model: 'minimax-m2'
+        temperature: 0.3
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are MiniMax-M2, a highly capable AI assistant with strong multilingual and reasoning abilities.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-deepseek-v31-terminus'
+      label: 'DeepSeek V3.1 Terminus'
+      description: 'DeepSeek V3.1 Terminus - advanced model with exceptional coding and reasoning.'
+      iconURL: 'https://deepseek.com/favicon.ico'
+      group: 'deepseek'
+      preset:
+        endpoint: 'deepseek'
+        modelLabel: 'DeepSeek V3.1 Terminus'
+        model: 'deepseek-v3.1-terminus'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are DeepSeek V3.1 Terminus, an advanced AI with exceptional coding and reasoning capabilities.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-deepseek-v32-exp'
+      label: 'DeepSeek V3.2 Exp'
+      description: 'DeepSeek V3.2 Experimental - cutting-edge experimental model with enhanced capabilities.'
+      iconURL: 'https://deepseek.com/favicon.ico'
+      group: 'deepseek'
+      preset:
+        endpoint: 'deepseek'
+        modelLabel: 'DeepSeek V3.2 Exp'
+        model: 'deepseek-v3.2-exp'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are DeepSeek V3.2 Experimental, a cutting-edge AI with enhanced reasoning and coding abilities.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-qwen3-235b'
+      label: 'Qwen3 235B A22B 2507'
+      description: 'Alibaba Qwen3 235B - massive MoE model with thinking mode toggle.'
+      iconURL: 'https://qianwen-res.oss-cn-beijing.aliyuncs.com/logo_qwen.jpg'
+      group: 'huggingface-reasoning'
+      preset:
+        endpoint: 'huggingface-reasoning'
+        modelLabel: 'Qwen3-235B-A22B-2507'
+        model: 'Qwen/Qwen3-235B-A22B-2507'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are Qwen3-235B with thinking mode enabled. Use <think>...</think> blocks to show your reasoning process.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-glm46'
+      label: 'GLM-4.6'
+      description: 'Zhipu AI GLM-4.6 - top-ranked on HF leaderboard with strong reasoning.'
+      iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
+      group: 'huggingface-reasoning'
+      preset:
+        endpoint: 'huggingface-reasoning'
+        modelLabel: 'GLM-4.6'
+        model: 'THUDM/GLM-4.6'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are GLM-4.6 from Zhipu AI. Apply advanced reasoning with multimodal understanding capabilities.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-magistral-medium'
+      label: 'Magistral Medium 1.2'
+      description: 'Mistral Magistral Medium 1.2 - balanced performance and efficiency.'
+      iconURL: 'https://mistral.ai/favicon.ico'
+      group: 'openrouter-sota'
+      preset:
+        endpoint: 'openrouter-sota'
+        modelLabel: 'Magistral Medium 1.2'
+        model: 'mistralai/magistral-medium-1.2'
+        temperature: 0.3
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are Magistral Medium 1.2 from Mistral AI, optimized for balanced performance and efficiency.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-apriel-thinker'
+      label: 'Apriel v1.5-15B Thinker'
+      description: 'ServiceNow Apriel v1.5 15B Thinker - specialized reasoning model.'
+      iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
+      group: 'openrouter-sota'
+      preset:
+        endpoint: 'openrouter-sota'
+        modelLabel: 'Apriel v1.5-15B Thinker'
+        model: 'servicenow/apriel-v1.5-15b-thinker'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are Apriel v1.5 Thinker from ServiceNow, specialized in systematic reasoning and analysis.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-nemotron-super'
+      label: 'Llama Nemotron Super 49B v1.5'
+      description: 'NVIDIA Llama Nemotron Super 49B v1.5 - optimized for instruction following and reasoning.'
+      iconURL: 'https://www.nvidia.com/favicon.ico'
+      group: 'openrouter-sota'
+      preset:
+        endpoint: 'openrouter-sota'
+        modelLabel: 'Llama Nemotron Super 49B v1.5'
+        model: 'nvidia/llama-nemotron-super-49b-v1.5'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are Llama Nemotron Super 49B from NVIDIA, optimized for complex reasoning and instruction following.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-exaone'
+      label: 'EXAONE 4.0 32B'
+      description: 'LG AI Research EXAONE 4.0 32B - multilingual model with strong reasoning.'
+      iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
+      group: 'openrouter-sota'
+      preset:
+        endpoint: 'openrouter-sota'
+        modelLabel: 'EXAONE 4.0 32B'
+        model: 'lgai/exaone-4.0-32b'
+        temperature: 0.3
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are EXAONE 4.0 from LG AI Research, a multilingual AI with strong reasoning capabilities.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-llama4-maverick'
+      label: 'Llama 4 Maverick'
+      description: 'Meta Llama 4 Maverick - latest generation Llama model with frontier capabilities.'
+      iconURL: 'https://llama.meta.com/favicon.ico'
+      group: 'openrouter-sota'
+      preset:
+        endpoint: 'openrouter-sota'
+        modelLabel: 'Llama 4 Maverick'
+        model: 'meta-llama/llama-4-maverick'
+        temperature: 0.3
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are Llama 4 Maverick from Meta, the latest generation Llama model with frontier-level capabilities.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-nova-premier'
+      label: 'Nova Premier'
+      description: 'Amazon Nova Premier - flagship model optimized for complex enterprise tasks.'
+      iconURL: 'https://aws.amazon.com/favicon.ico'
+      group: 'amazon-bedrock'
+      preset:
+        endpoint: 'amazon-bedrock'
+        modelLabel: 'Nova Premier'
+        model: 'amazon/nova-premier'
+        temperature: 0.3
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are Nova Premier from Amazon, a flagship AI model optimized for complex enterprise and reasoning tasks.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-command-a'
+      label: 'Command A'
+      description: 'Cohere Command A - enterprise-focused model with strong reasoning and RAG.'
+      iconURL: 'https://cohere.com/favicon.ico'
+      group: 'cohere'
+      preset:
+        endpoint: 'cohere'
+        modelLabel: 'Command A'
+        model: 'command-a'
+        temperature: 0.3
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are Command A from Cohere, an enterprise AI with strong reasoning and retrieval-augmented generation.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-reka-flash3'
+      label: 'Reka Flash 3'
+      description: 'Reka AI Flash 3 - multimodal model with fast inference and strong reasoning.'
+      iconURL: 'https://reka.ai/favicon.ico'
+      group: 'openrouter-sota'
+      preset:
+        endpoint: 'openrouter-sota'
+        modelLabel: 'Reka Flash 3'
+        model: 'reka/reka-flash-3'
+        temperature: 0.3
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are Reka Flash 3, a multimodal AI with fast inference and strong reasoning capabilities.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-phi4'
+      label: 'Phi-4'
+      description: 'Microsoft Phi-4 - compact but powerful reasoning model excelling at math and science.'
+      iconURL: 'https://microsoft.com/favicon.ico'
+      group: 'huggingface-reasoning'
+      preset:
+        endpoint: 'huggingface-reasoning'
+        modelLabel: 'Phi-4'
+        model: 'microsoft/phi-4'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are Phi-4 from Microsoft, a compact but powerful reasoning model excelling at mathematics and science.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-jamba-reasoning'
+      label: 'Jamba Reasoning 3B'
+      description: 'AI21 Labs Jamba Reasoning 3B - efficient reasoning model with hybrid architecture.'
+      iconURL: 'https://ai21.com/favicon.ico'
+      group: 'huggingface-reasoning'
+      preset:
+        endpoint: 'huggingface-reasoning'
+        modelLabel: 'Jamba Reasoning 3B'
+        model: 'AI21-Labs/Jamba-Reasoning-3B'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are Jamba Reasoning 3B from AI21 Labs, an efficient AI with hybrid Mamba-Transformer architecture.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'sota-dbrx'
+      label: 'DBRX'
+      description: 'Databricks DBRX - MoE model optimized for enterprise data and analytics tasks.'
+      iconURL: 'https://databricks.com/favicon.ico'
+      group: 'openrouter-sota'
+      preset:
+        endpoint: 'openrouter-sota'
+        modelLabel: 'DBRX'
+        model: 'databricks/dbrx-instruct'
+        temperature: 0.3
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are DBRX from Databricks, an MoE model optimized for enterprise data analysis and complex reasoning.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    # ========================================================================
+    # CLAUDE 4.5 SERIES
+    # ========================================================================
+    - name: 'claude-sonnet45'
+      label: 'Claude 4.5 Sonnet'
+      description: 'Claude Sonnet 4.5 - balanced performance with extended context.'
+      iconURL: 'anthropic'
+      group: 'anthropic'
+      preset:
+        endpoint: 'anthropic'
+        modelLabel: 'Claude 4.5 Sonnet'
+        model: 'claude-sonnet-4-5-20250929'
+        temperature: 0.3
+        max_tokens: 32000
+        resendFiles: true
+        promptPrefix: |
+          You are Claude 4.5 Sonnet, Anthropic's balanced AI with excellent reasoning and extended context.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'claude-haiku45'
+      label: 'Claude 4.5 Haiku'
+      description: 'Claude Haiku 4.5 - fast and efficient for everyday tasks.'
+      iconURL: 'anthropic'
+      group: 'anthropic'
+      preset:
+        endpoint: 'anthropic'
+        modelLabel: 'Claude 4.5 Haiku'
         model: 'claude-haiku-4-5-20251001'
         temperature: 0.3
         max_tokens: 32000
         resendFiles: true
         promptPrefix: |
-          You are an expert coding assistant. Write clean, production-ready code with thorough explanations.
+          You are Claude 4.5 Haiku, optimized for fast, efficient responses while maintaining high quality.
         tools:
           - calculator
           - tavily_search_results_json
-
-    - name: 'coder-o4mini-high'
-      label: 'Coder (o4-mini-high)'
-      description: 'Primary coding preset powered by OpenAI o4-mini-high with extended output.'
-      iconURL: 'openAI'
-      group: 'openAI'
-      preset:
-        endpoint: 'openAI'
-        modelLabel: 'o4-mini-high'
-        model: 'o4-mini-high'
-        temperature: 0.3
-        max_tokens: 100000
-        resendFiles: true
-        promptPrefix: |
-          You are an expert coding assistant. Write clean, production-ready code with thorough explanations.
-        tools:
-          - calculator
-          - tavily_search_results_json
-          - image_gen_oai
-
-    - name: 'coder-o4mini'
-      label: 'Coder (o4-mini)'
-      description: 'Primary coding preset powered by OpenAI o4-mini with extended output.'
-      iconURL: 'openAI'
-      group: 'openAI'
-      preset:
-        endpoint: 'openAI'
-        modelLabel: 'o4-mini'
-        model: 'o4-mini'
-        temperature: 0.3
-        max_tokens: 100000
-        resendFiles: true
-        promptPrefix: |
-          You are an expert coding assistant. Write clean, production-ready code with thorough explanations.
-        tools:
-          - calculator
-          - tavily_search_results_json
-          - image_gen_oai
 
     # ========================================================================
     # REASONING PRESETS
     # ========================================================================
-    - name: 'reasoning-opus41'
-      label: 'Reasoning (Opus 4.1)'
-      description: 'Advanced reasoning preset - excellent for complex problem-solving and coding.'
-      iconURL: 'anthropic'
-      group: 'anthropic'
+    - name: 'reasoning-deepseek-r1'
+      label: 'DeepSeek R1 (671B)'
+      description: 'DeepSeek R1 - 671B parameter reasoning powerhouse competing with o1/o3.'
+      iconURL: 'https://deepseek.com/favicon.ico'
+      group: 'openrouter-reasoning'
       preset:
-        endpoint: 'anthropic'
-        modelLabel: 'Claude Opus 4.1'
-        model: 'claude-opus-4.1-20250514'
-        temperature: 0.3
-        max_tokens: 32000
+        endpoint: 'openrouter-reasoning'
+        modelLabel: 'DeepSeek R1'
+        model: 'deepseek/deepseek-r1'
+        temperature: 0.2
+        max_tokens: 8192
         resendFiles: true
         promptPrefix: |
-          You are an advanced reasoning assistant. Break down complex problems systematically and provide thorough, well-reasoned explanations.
+          You are DeepSeek R1, an advanced reasoning model. Use chain-of-thought to break down complex problems systematically.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'reasoning-deepseek-r1-0528'
+      label: 'DeepSeek R1 0528'
+      description: 'DeepSeek R1 0528 - latest R1 version with enhanced capabilities.'
+      iconURL: 'https://deepseek.com/favicon.ico'
+      group: 'deepseek'
+      preset:
+        endpoint: 'deepseek'
+        modelLabel: 'DeepSeek R1 0528'
+        model: 'deepseek-r1-0528'
+        temperature: 0.2
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are DeepSeek R1 0528, the latest reasoning model. Apply systematic analysis to complex problems.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'reasoning-kimi-k2-0905'
+      label: 'Kimi K2 0905'
+      description: 'Moonshot AI Kimi K2 0905 - enhanced reasoning variant.'
+      iconURL: 'https://www.moonshot.cn/favicon.ico'
+      group: 'moonshot'
+      preset:
+        endpoint: 'moonshot'
+        modelLabel: 'Kimi K2 0905'
+        model: 'kimi-k2-0905'
+        temperature: 0.3
+        max_tokens: 8192
+        resendFiles: true
+        promptPrefix: |
+          You are Kimi K2 0905, an enhanced reasoning AI. Apply deep analytical thinking to problems.
         tools:
           - calculator
           - tavily_search_results_json
 
     - name: 'reasoning-o3pro'
       label: 'Reasoning (o3-pro)'
-      description: 'Advanced reasoning preset powered by OpenAI o3-pro - excellent for all uses.'
+      description: 'OpenAI o3-pro - advanced reasoning for complex problem-solving.'
       iconURL: 'openAI'
       group: 'openAI'
       preset:
@@ -441,7 +1063,7 @@ modelSpecs:
         max_tokens: 100000
         resendFiles: true
         promptPrefix: |
-          You are an advanced reasoning assistant. Break down complex problems systematically and provide thorough, well-reasoned explanations.
+          You are o3-pro, an advanced reasoning model. Break down complex problems systematically.
         tools:
           - calculator
           - tavily_search_results_json
@@ -449,7 +1071,7 @@ modelSpecs:
 
     - name: 'reasoning-o3'
       label: 'Reasoning (o3)'
-      description: 'Advanced reasoning preset powered by OpenAI o3 - excellent for all uses including coding.'
+      description: 'OpenAI o3 - excellent for all uses including coding.'
       iconURL: 'openAI'
       group: 'openAI'
       preset:
@@ -460,37 +1082,92 @@ modelSpecs:
         max_tokens: 100000
         resendFiles: true
         promptPrefix: |
-          You are an advanced reasoning assistant. Break down complex problems systematically and provide thorough, well-reasoned explanations.
+          You are o3, an advanced reasoning model. Provide thorough, well-reasoned explanations.
         tools:
           - calculator
           - tavily_search_results_json
           - image_gen_oai
 
     # ========================================================================
-    # GENERAL PURPOSE PRESETS
+    # gpt-oss OPEN SOURCE MODELS
     # ========================================================================
-    - name: 'general-sonnet4'
-      label: 'General (Sonnet 4 - 1M)'
-      description: 'General purpose preset with 1 million token context window.'
-      iconURL: 'anthropic'
-      group: 'anthropic'
+    - name: 'gpt-oss-120b-high'
+      label: 'gpt-oss-120B (HIGH)'
+      description: 'OpenAI gpt-oss 120B High - open source model via OpenAI API.'
+      iconURL: 'openAI'
+      group: 'openAI'
       preset:
-        endpoint: 'anthropic'
-        modelLabel: 'Claude Sonnet 4 (1M)'
-        model: 'claude-sonnet-4-5-20250929'
+        endpoint: 'openAI'
+        modelLabel: 'gpt-oss-120B (HIGH)'
+        model: 'gpt-oss-120b-high'
+        temperature: 0.3
+        max_tokens: 100000
+        resendFiles: true
+        promptPrefix: |
+          You are gpt-oss-120B, a powerful open-source model. Provide comprehensive and accurate responses.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    - name: 'gpt-oss-20b-high'
+      label: 'gpt-oss-20B (HIGH)'
+      description: 'OpenAI gpt-oss 20B High - efficient open source model.'
+      iconURL: 'openAI'
+      group: 'openAI'
+      preset:
+        endpoint: 'openAI'
+        modelLabel: 'gpt-oss-20B (HIGH)'
+        model: 'gpt-oss-20b-high'
+        temperature: 0.3
+        max_tokens: 100000
+        resendFiles: true
+        promptPrefix: |
+          You are gpt-oss-20B, an efficient open-source model. Provide accurate and helpful responses.
+        tools:
+          - calculator
+          - tavily_search_results_json
+
+    # ========================================================================
+    # GEMINI SERIES
+    # ========================================================================
+    - name: 'gemini-25-pro'
+      label: 'Gemini 2.5 Pro'
+      description: 'Google Gemini 2.5 Pro - advanced multimodal capabilities.'
+      iconURL: 'google'
+      group: 'google'
+      preset:
+        endpoint: 'google'
+        modelLabel: 'Gemini 2.5 Pro'
+        model: 'gemini-2.5-pro'
         temperature: 0.3
         max_tokens: 32000
         resendFiles: true
         promptPrefix: |
-          You are a versatile general-purpose assistant with extended context capabilities.
+          You are Gemini 2.5 Pro, Google's advanced AI with multimodal capabilities.
         tools:
           - calculator
           - tavily_search_results_json
-          - image_gen_oai
-          - dalle
+
+    - name: 'gemini-25-flash-sep'
+      label: 'Gemini 2.5 Flash (Sep)'
+      description: 'Google Gemini 2.5 Flash September version - fast and efficient.'
+      iconURL: 'google'
+      group: 'google'
+      preset:
+        endpoint: 'google'
+        modelLabel: 'Gemini 2.5 Flash (Sep)'
+        model: 'gemini-2.5-flash-sep'
+        temperature: 0.3
+        max_tokens: 32000
+        resendFiles: true
+        promptPrefix: |
+          You are Gemini 2.5 Flash, optimized for speed while maintaining quality.
+        tools:
+          - calculator
+          - tavily_search_results_json
 
     # ========================================================================
-    # MEDICAL AI PRESETS
+    # MEDICAL AI PRESETS - Specialized Healthcare Models
     # ========================================================================
     - name: 'medical-llama3-8b'
       label: 'Medical AI (Llama3-8B)'
@@ -512,7 +1189,7 @@ modelSpecs:
 
     - name: 'medical-reasoning'
       label: 'Medical Reasoning AI'
-      description: 'Advanced medical reasoning model for complex diagnosis and clinical decision support.'
+      description: 'HuatuoGPT-o1-8B - advanced medical reasoning with chain-of-thought for complex diagnosis.'
       iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
       group: 'huggingface-medical'
       preset:
@@ -530,7 +1207,7 @@ modelSpecs:
 
     - name: 'biomedical-ai'
       label: 'Biomedical AI'
-      description: 'Biomedical assistant specialized in research, literature review, and medical knowledge.'
+      description: 'Bio-Medical-Llama-3-8B - specialized in biomedical research and literature analysis.'
       iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
       group: 'huggingface-medical'
       preset:
@@ -546,177 +1223,118 @@ modelSpecs:
           - calculator
           - tavily_search_results_json
 
-    # ========================================================================
-    # HF SOTA REASONING MODELS (Baidu ERNIE, Qwen3, Microsoft Phi-4, GLM)
-    # ========================================================================
-    - name: 'reasoning-ernie-300b'
-      label: 'ERNIE 4.5 (300B MoE)'
-      description: 'Baidu ERNIE 4.5 - 300B MoE (47B active). SOTA Chinese/English reasoning, rivals DeepSeek R1.'
+    - name: 'medical-biogpt'
+      label: 'BioGPT (Microsoft)'
+      description: 'Microsoft BioGPT - pre-trained on biomedical literature for research and clinical support.'
       iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
-      group: 'huggingface-reasoning'
+      group: 'huggingface-medical'
       preset:
-        endpoint: 'huggingface-reasoning'
-        modelLabel: 'ERNIE-4.5-300B'
-        model: 'baidu/ERNIE-4.5-300B-A47B-PT'
+        endpoint: 'huggingface-medical'
+        modelLabel: 'BioGPT'
+        model: 'microsoft/biogpt'
         temperature: 0.2
-        max_tokens: 8192
+        max_tokens: 4096
         resendFiles: true
         promptPrefix: |
-          You are ERNIE 4.5, a 300B MoE reasoning powerhouse from Baidu. Use systematic reasoning with bilingual (English/Chinese) capability.
+          You are BioGPT, a biomedical language model trained on scientific literature. Assist with medical research, clinical queries, and biomedical text analysis.
         tools:
           - calculator
           - tavily_search_results_json
 
-    - name: 'reasoning-ernie-21b-thinking'
-      label: 'ERNIE 4.5 Thinking (21B)'
-      description: 'Baidu ERNIE 4.5 Thinking - 21B MoE optimized for complex reasoning tasks with chain-of-thought.'
+    - name: 'medical-chatdoctor'
+      label: 'ChatDoctor'
+      description: 'ChatDoctor - conversational medical AI trained on patient-doctor dialogues.'
       iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
-      group: 'huggingface-reasoning'
+      group: 'huggingface-medical'
       preset:
-        endpoint: 'huggingface-reasoning'
-        modelLabel: 'ERNIE-4.5-Thinking'
-        model: 'baidu/ERNIE-4.5-21B-A3B-Thinking'
+        endpoint: 'huggingface-medical'
+        modelLabel: 'ChatDoctor'
+        model: 'zl111/ChatDoctor'
         temperature: 0.2
-        max_tokens: 8192
+        max_tokens: 4096
         resendFiles: true
         promptPrefix: |
-          You are ERNIE 4.5 Thinking, optimized for highly complex reasoning tasks. Show your step-by-step thinking process.
+          You are ChatDoctor, a medical AI assistant. Provide helpful medical information and guidance. Always remind users to consult healthcare professionals for diagnosis and treatment.
         tools:
           - calculator
           - tavily_search_results_json
 
-    - name: 'reasoning-qwen3-235b'
-      label: 'Qwen3 (235B MoE)'
-      description: 'Alibaba Qwen3-235B - 235B MoE with unique thinking mode toggle. Competes with DeepSeek R1 and o3-mini.'
+    - name: 'medical-meditron'
+      label: 'Meditron 70B'
+      description: 'EPFL Meditron 70B - large medical model trained on clinical guidelines and literature.'
       iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
-      group: 'huggingface-reasoning'
+      group: 'huggingface-medical'
       preset:
-        endpoint: 'huggingface-reasoning'
-        modelLabel: 'Qwen3-235B'
-        model: 'Qwen/Qwen3-235B-A22B'
+        endpoint: 'huggingface-medical'
+        modelLabel: 'Meditron 70B'
+        model: 'epfl-llm/meditron-70b'
         temperature: 0.2
-        max_tokens: 8192
+        max_tokens: 4096
         resendFiles: true
         promptPrefix: |
-          You are Qwen3-235B with thinking mode enabled. Generate <think>...</think> blocks to show your reasoning process.
+          You are Meditron, a large medical language model. Provide evidence-based medical information following clinical guidelines. Always emphasize professional medical consultation.
         tools:
           - calculator
           - tavily_search_results_json
 
-    - name: 'reasoning-phi4'
-      label: 'Phi-4 Reasoning (14B)'
-      description: 'Microsoft Phi-4 - 14B that approaches DeepSeek R1 performance. Excels at AIME, GPQA, OmniMath.'
+    - name: 'medical-jsl-medllama'
+      label: 'JSL MedLlama 3'
+      description: 'John Snow Labs MedLlama 3 8B - specialized for healthcare NLP and clinical text.'
       iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
-      group: 'huggingface-reasoning'
+      group: 'huggingface-medical'
       preset:
-        endpoint: 'huggingface-reasoning'
-        modelLabel: 'Phi-4-Reasoning'
-        model: 'microsoft/Phi-4-reasoning'
+        endpoint: 'huggingface-medical'
+        modelLabel: 'JSL-MedLlama-3-8B'
+        model: 'johnsnowlabs/JSL-MedLlama-3-8B-v9'
         temperature: 0.2
-        max_tokens: 8192
+        max_tokens: 4096
         resendFiles: true
         promptPrefix: |
-          You are Phi-4, a compact but powerful reasoning model. Excel at mathematical and scientific reasoning.
+          You are JSL MedLlama, specialized in healthcare NLP and clinical text processing. Assist with medical documentation and clinical information extraction.
         tools:
           - calculator
           - tavily_search_results_json
 
-    - name: 'reasoning-glm45v'
-      label: 'GLM-4.5V (Zhipu AI)'
-      description: 'Zhipu AI GLM-4.5V - Top-ranked on HF leaderboard. Tsinghua spin-off model with strong reasoning.'
+    - name: 'medical-openbiollm'
+      label: 'OpenBioLLM Llama3'
+      description: 'OpenBioLLM Llama3 8B - open biomedical language model for research applications.'
       iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
-      group: 'huggingface-reasoning'
+      group: 'huggingface-medical'
       preset:
-        endpoint: 'huggingface-reasoning'
-        modelLabel: 'GLM-4.5V'
-        model: 'zai-org/GLM-4.5V'
+        endpoint: 'huggingface-medical'
+        modelLabel: 'OpenBioLLM-Llama3-8B'
+        model: 'aaditya/OpenBioLLM-Llama3-8B'
         temperature: 0.2
-        max_tokens: 8192
+        max_tokens: 4096
         resendFiles: true
         promptPrefix: |
-          You are GLM-4.5V from Zhipu AI. Apply advanced reasoning with multimodal understanding capabilities.
+          You are OpenBioLLM, an open biomedical language model. Assist with biomedical research, scientific literature analysis, and medical information retrieval.
         tools:
           - calculator
           - tavily_search_results_json
 
     # ========================================================================
-    # TOP REASONING MODELS (OPENROUTER)
+    # CODE GENERATION PRESETS
     # ========================================================================
-    - name: 'reasoning-deepseek-r1'
-      label: 'DeepSeek R1 (671B)'
-      description: 'DeepSeek R1 - 671B parameter reasoning powerhouse. Competes with o1/o3.'
-      iconURL: 'https://deepseek.com/favicon.ico'
-      group: 'openrouter-reasoning'
+    - name: 'coder-o4mini-high'
+      label: 'Coder (o4-mini-high)'
+      description: 'Primary coding preset powered by OpenAI o4-mini-high with extended output.'
+      iconURL: 'openAI'
+      group: 'openAI'
       preset:
-        endpoint: 'openrouter-reasoning'
-        modelLabel: 'DeepSeek R1'
-        model: 'deepseek/deepseek-r1'
-        temperature: 0.2
-        max_tokens: 8192
+        endpoint: 'openAI'
+        modelLabel: 'o4-mini-high'
+        model: 'o4-mini-high'
+        temperature: 0.3
+        max_tokens: 100000
         resendFiles: true
         promptPrefix: |
-          You are DeepSeek R1, an advanced reasoning model. Use chain-of-thought to break down complex problems systematically.
+          You are an expert coding assistant. Write clean, production-ready code with thorough explanations.
         tools:
           - calculator
           - tavily_search_results_json
+          - image_gen_oai
 
-    - name: 'reasoning-r1-qwen-32b'
-      label: 'DeepSeek R1 Distill (32B)'
-      description: 'DeepSeek R1 distilled to Qwen 32B - excellent reasoning at lower cost.'
-      iconURL: 'https://deepseek.com/favicon.ico'
-      group: 'openrouter-reasoning'
-      preset:
-        endpoint: 'openrouter-reasoning'
-        modelLabel: 'R1-Distill-Qwen-32B'
-        model: 'deepseek/deepseek-r1-distill-qwen-32b'
-        temperature: 0.2
-        max_tokens: 8192
-        resendFiles: true
-        promptPrefix: |
-          You are DeepSeek R1 (distilled). Apply systematic reasoning and show your thinking process.
-        tools:
-          - calculator
-          - tavily_search_results_json
-
-    - name: 'reasoning-qwq-32b'
-      label: 'QwQ-32B (Qwen Reasoning)'
-      description: 'Qwen QwQ-32B - advanced reasoning model with questioning approach.'
-      iconURL: 'https://qianwen-res.oss-cn-beijing.aliyuncs.com/logo_qwen.jpg'
-      group: 'openrouter-reasoning'
-      preset:
-        endpoint: 'openrouter-reasoning'
-        modelLabel: 'QwQ-32B'
-        model: 'qwen/qwq-32b-preview'
-        temperature: 0.2
-        max_tokens: 8192
-        resendFiles: true
-        promptPrefix: |
-          You are QwQ-32B, a reasoning model that questions and analyzes deeply. Break down problems through questioning.
-        tools:
-          - calculator
-          - tavily_search_results_json
-
-    - name: 'reasoning-nemotron-70b'
-      label: 'Nemotron 70B'
-      description: 'NVIDIA Nemotron 70B - top reasoning and instruction following.'
-      iconURL: 'https://www.nvidia.com/favicon.ico'
-      group: 'openrouter-reasoning'
-      preset:
-        endpoint: 'openrouter-reasoning'
-        modelLabel: 'Nemotron-70B'
-        model: 'nvidia/llama-3.1-nemotron-70b-instruct'
-        temperature: 0.2
-        max_tokens: 8192
-        resendFiles: true
-        promptPrefix: |
-          You are Nemotron 70B, optimized for complex reasoning and instruction following. Provide detailed, accurate responses.
-        tools:
-          - calculator
-          - tavily_search_results_json
-
-    # ========================================================================
-    # CODE GENERATION PRESETS (HUGGING FACE)
-    # ========================================================================
     - name: 'coder-qwen-32b'
       label: 'Coder (Qwen 32B)'
       description: 'State-of-the-art code generation with Qwen2.5-Coder-32B - matches GPT-4o performance.'
@@ -731,23 +1349,6 @@ modelSpecs:
         resendFiles: true
         promptPrefix: |
           You are an expert coding assistant powered by Qwen2.5-Coder-32B. Write clean, efficient, well-documented code. Explain your implementation choices.
-        tools:
-          - calculator
-
-    - name: 'coder-deepseek-v2'
-      label: 'Coder (DeepSeek V2)'
-      description: 'DeepSeek Coder V2 - advanced code generation and understanding.'
-      iconURL: 'https://huggingface.co/front/assets/huggingface_logo-noborder.svg'
-      group: 'huggingface-code'
-      preset:
-        endpoint: 'huggingface-code'
-        modelLabel: 'DeepSeek-Coder-V2-Lite'
-        model: 'deepseek-ai/DeepSeek-Coder-V2-Lite-Instruct'
-        temperature: 0.2
-        max_tokens: 8192
-        resendFiles: true
-        promptPrefix: |
-          You are an expert coding assistant powered by DeepSeek Coder V2. Write production-quality code with best practices.
         tools:
           - calculator
 
